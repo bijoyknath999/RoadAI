@@ -38,6 +38,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.cooperativeai.R;
+import com.cooperativeai.statemanagement.MainStore;
 import com.cooperativeai.utils.Constants;
 import com.cooperativeai.utils.SharedPreferenceManager;
 import com.cooperativeai.utils.UtilityMethods;
@@ -103,7 +104,13 @@ public class CameraActivity extends AppCompatActivity {
     protected int previewHeight = 0;
     private int[] intValues;
 
+    protected MainStore mainstore;
 
+
+    CameraActivity(MainStore mainStore)
+    {
+        this.mainstore = mainStore;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,7 +127,7 @@ public class CameraActivity extends AppCompatActivity {
         wasCreated = false;
 
         final AssetManager mngr =getApplicationContext().getAssets();
-        detectorActivity= new DetectorActivity(mngr, this, hasLocationPermission);
+        detectorActivity= new DetectorActivity(mngr, this, hasLocationPermission, mainstore);
 
         cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
         cameraFacing = CameraCharacteristics.LENS_FACING_BACK;
@@ -382,16 +389,16 @@ public class CameraActivity extends AppCompatActivity {
             else if (level == 5 && coins.equals("30.0"))
                 Toast.makeText(CameraActivity.this,"Coin daily limit reached!!",Toast.LENGTH_LONG).show();
             else
-                if (UtilityMethods.isInternetAvailable())
-                {
-                    takePicture();
-                }
-                else {
-                    Toast.makeText(CameraActivity.this, "No internet connection available", Toast.LENGTH_SHORT).show();
-                }
+            if (UtilityMethods.isInternetAvailable())
+            {
+                takePicture();
+            }
+            else {
+                Toast.makeText(CameraActivity.this, "No internet connection available", Toast.LENGTH_SHORT).show();
+            }
         }
         else
-            {
+        {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -582,4 +589,5 @@ public class CameraActivity extends AppCompatActivity {
                 SharedPreferenceManager.getUserLevel(CameraActivity.this),SharedPreferenceManager.getUserCoins(CameraActivity.this),
                 SharedPreferenceManager.getUserGoalCheck(CameraActivity.this),SharedPreferenceManager.getUserTotalPicturesCapture(CameraActivity.this));
     }
+
 }

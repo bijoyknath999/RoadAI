@@ -21,6 +21,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.cooperativeai.R;
+import com.cooperativeai.statemanagement.MainStore;
 import com.cooperativeai.utils.Constants;
 import com.cooperativeai.utils.DateTimeManager;
 import com.cooperativeai.utils.SharedPreferenceManager;
@@ -43,14 +44,16 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class HomeFragment extends Fragment implements LocationListener {
 
     private TextView TextTemp, TextUsername, TextLevel, TextCoins, TextCurrentTime, TextCurrentLocation;
     private LocationManager locationManager;
-    private double longnitude, latitude;
-    private Date lastUsedDate;
+    private double latitude = 0.0;
+    private double longitude = 0.0;    private Date lastUsedDate;
     private String lastUsedDateAsString;
     private Date currentDate;
     private int userCurrentLevel,level;
@@ -58,6 +61,9 @@ public class HomeFragment extends Fragment implements LocationListener {
     private DatabaseReference UsersDatabaseRef;
     private String currentDateAsString,city,country,UserCurrentGoalCheck,CurrentCoins,CurrentWallet,Username;
     double wallet;
+    private Timer timer;
+    private MainStore mainStore;
+    private CameraActivity cameraActivity;
 
 
 
@@ -132,7 +138,7 @@ public class HomeFragment extends Fragment implements LocationListener {
         OpenWeatherMapHelper helper = new OpenWeatherMapHelper(getString(R.string.openweatherapi));
         helper.setUnits(Units.METRIC);
         helper.setLang(Lang.ENGLISH);
-        helper.getCurrentWeatherByGeoCoordinates(latitude,longnitude, new CurrentWeatherCallback() {
+        helper.getCurrentWeatherByGeoCoordinates(latitude,longitude, new CurrentWeatherCallback() {
             @Override
             public void onSuccess(CurrentWeather currentWeather) {
 
@@ -197,8 +203,18 @@ public class HomeFragment extends Fragment implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        longnitude = location.getLongitude();
+        longitude = location.getLongitude();
         latitude = location.getLatitude();
+
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                mainStore.updateGps(latitude,longitude);
+                cameraActivity = new CameraActivity(mainStore);
+            }
+        };
+        timer = new Timer();
+        timer.scheduleAtFixedRate(timerTask, 0, 10000);
     }
 
     @Override
@@ -222,7 +238,7 @@ public class HomeFragment extends Fragment implements LocationListener {
         try {
             Geocoder geocoder = new Geocoder(getActivity());
             List<Address> addresses = null;
-            addresses = geocoder.getFromLocation(latitude,longnitude,1);
+            addresses = geocoder.getFromLocation(latitude,longitude,1);
 
             city = addresses.get(0).getLocality();
             country = addresses.get(0).getCountryName();

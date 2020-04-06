@@ -8,6 +8,7 @@
 
 package com.cooperativeai.activities;
 
+
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -29,19 +30,21 @@ import androidx.annotation.NonNull;
 import com.cooperativeai.env.ImageUtils;
 import com.cooperativeai.env.Logger;
 import com.cooperativeai.statemanagement.MainStore;
+import com.cooperativeai.statemanagement.StateProps.BoundingBox;
 import com.cooperativeai.statemanagement.StateProps.Distress;
+import com.cooperativeai.statemanagement.StateProps.GpsLatLon;
 import com.cooperativeai.tflite.Classifier;
 import com.cooperativeai.tflite.TFLiteObjectDetectionAPIModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
+
+
+
 
 
 class DetectorActivity {
@@ -85,11 +88,13 @@ class DetectorActivity {
     private boolean hasLocationPermission;
     private double latitude = 0.0;
     private double longitude = 0.0;
+    MainStore mainStore;
 
-    DetectorActivity(final AssetManager mngr, final Context context, boolean hasLocationPermission) {
+    DetectorActivity(final AssetManager mngr, final Context context, boolean hasLocationPermission, MainStore mainstore) {
         this.context = context;
         detectorsetup(mngr);
         this.hasLocationPermission = hasLocationPermission;
+        this.mainStore=mainstore;
     }
 
     protected void detectorsetup(final AssetManager mngr) {
@@ -119,23 +124,18 @@ class DetectorActivity {
         LOGGER.i("Initializing at size %dx%d", previewWidth, previewHeight);
     }
 
-    protected JSONObject jsonCreate(final Classifier.Recognition result) throws JSONException {
-        float confidenceScore = 0.0f;
-        String classname = result.getTitle();
+
+    public void sendtoDistressServer(final Classifier.Recognition result)
+    {
+        String distress = "";
+        int severity = 0;
+        double classScore = 0;
+        distress=result.getTitle();
+        classScore=result.getConfidence()*100;
         final RectF location = result.getLocation();
-        //Toast.makeText(getApplicationContext(),"result"+result,Toast.LENGTH_LONG).show();
-        JSONObject Distressobj = new JSONObject();
-        JSONObject Boundingbox = new JSONObject();
-        confidenceScore = result.getConfidence();
-        Distressobj.put("Distress", classname);
-        Distressobj.put("ClassConfidence", confidenceScore * 100);
-        Distressobj.put("Severity", 0);
-        Boundingbox.put("left", location.left);
-        Boundingbox.put("top", location.top);
-        Boundingbox.put("right", location.right);
-        Boundingbox.put("bottom", location.bottom);
-        Distressobj.put("Boundingbox", Boundingbox);
-        return Distressobj;
+        BoundingBox boundingbox= new BoundingBox(location.left, location.top, location.right, location.bottom);
+        GpsLatLon gps = new GpsLatLon(latitude,longitude);
+        mainStore.addDistress(new Distress(gps, distress, severity, classScore, boundingbox));
     }
 
     protected void detection(Bitmap image) {
@@ -164,9 +164,6 @@ class DetectorActivity {
         final List<Classifier.Recognition> results = detector.recognizeImage(croppedBitmap);
         lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
 
-        JSONObject StateJson = new JSONObject();
-        JSONObject Gps = new JSONObject();
-
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         FusedLocationProviderClient client = new FusedLocationProviderClient(context);
         client.getLastLocation()
@@ -180,11 +177,9 @@ class DetectorActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                      Toast.makeText(context, "Location Fetching failed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Location Fetching failed", Toast.LENGTH_SHORT).show();
                     }
                 });
-
-
         float minimumConfidence = MINIMUM_CONFIDENCE_TF_OD_API;
         switch (MODE) {
             case TF_OD_API:
@@ -192,33 +187,16 @@ class DetectorActivity {
                 break;
         }
 
-//                final List<Classifier.Recognition> mappedRecognitions =
-//                        new LinkedList<Classifier.Recognition>();
-        JSONArray ListDistress = new JSONArray();
         for (final Classifier.Recognition result : results) {
             final RectF location = result.getLocation();
             if (location != null && result.getConfidence() >= minimumConfidence) {
                 try {
-                    ListDistress.put(jsonCreate(result));
+                    //ListDistress.put(jsonCreate(result));
+                    sendtoDistressServer(result);
                 } catch (Exception e) {
                 }
             }
         }
-        try {
-            Gps.put("lattitude", latitude);
-            Gps.put("longitude", longitude);
-            new MainStore(latitude,longitude);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        try {
-            StateJson.put("GPS", Gps);
-            StateJson.put("ListDistress", ListDistress);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        Toast.makeText(context.getApplicationContext(), "result" + StateJson, Toast.LENGTH_LONG).show();
-        Log.i(TAG,"Result : "+StateJson);
         computingDetection = false;
         closeBackgroundThread();
     }
