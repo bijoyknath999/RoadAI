@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "282375181700",
+    "firebase_url": "https://roadai-86d78.firebaseio.com",
+    "project_id": "roadai-86d78",
+    "storage_bucket": "roadai-86d78.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:282375181700:android:b7f7630a50058b45ea79d1",
+        "android_client_info": {
+          "package_name": "com.cooperativeai"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "282375181700-bnbl5mid7l7ftvvcmeh4regism8fas90.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cooperativeai",
+            "certificate_hash": "2947f5d9622030e2f9329b999a68936781fcdaa4"
+          }
+        },
+        {
+          "client_id": "282375181700-tuctqid5uu40g3sdom09cmu1pvtpbmff.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMxxsjPvpdHfjL6PD6ZXFaait2WV-Q_Xc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "282375181700-tuctqid5uu40g3sdom09cmu1pvtpbmff.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

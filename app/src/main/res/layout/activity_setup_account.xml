@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color4"
+    tools:context=".activities.SetupAccount">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_alignParentStart="true"
+        tools:layout_editor_absoluteX="74dp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="20dp">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="40dp"
+                android:layout_marginTop="90dp"
+                android:id="@+id/sign_up_layout_1">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/welcome_image_1"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:src="@drawable/roadai_copy_365x236"
+                    app:civ_border_color="@color/TransparentWhite"
+                    android:layout_gravity="center"
+                    app:civ_border_width="2dp" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:id="@+id/sign_up_layout_2"
+                android:layout_below="@+id/sign_up_layout_1">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/setupfullname"
+                    android:padding="10dp"
+                    android:layout_margin="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Full name"
+                    android:inputType="text"
+                    android:background="@drawable/signuppage_custom_box" />
+
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/setupusername"
+                    android:padding="10dp"
+                    android:layout_margin="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Username"
+                    android:inputType="text"
+                    android:background="@drawable/signuppage_custom_box" />
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:padding="10dp"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/signuppage_custom_box"
+                    android:id="@+id/setupemail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Email"
+                    android:inputType="textEmailAddress"/>
+
+
+                <Button
+                    android:id="@+id/savebtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Save data"
+                    android:padding="10dp"
+                    android:layout_margin="10dp"
+                    android:layout_alignParentBottom="true"
+                    android:textSize="20sp"
+                    android:textAllCaps="false"
+                    android:textColor="@color/color1"
+                    android:background="@drawable/slide_custom_btn"/>
+
+                <Button
+                    android:id="@+id/signoutbtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sign Out"
+                    android:padding="10dp"
+                    android:layout_margin="10dp"
+                    android:layout_alignParentBottom="true"
+                    android:textSize="20sp"
+                    android:textAllCaps="false"
+                    android:textColor="@color/color1"
+                    android:background="@drawable/slide_custom_btn"/>
+
+            </LinearLayout>
+
+
+
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

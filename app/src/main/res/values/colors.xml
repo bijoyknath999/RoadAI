@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#003366</color>
+    <color name="colorPrimaryDark">#003366</color>
+    <color name="colorAccent">#CCCCCC</color>
+    <color name="honey_color">#FFC30B</color>
+    <color name="honey_color_light">#80FFC30B</color>
+    <color name="honey_color_dark">#F7971E</color>
+    <color name="choco_black">#1D1818</color>
+    <color name="light_black">#1A1919</color>
+    <color name="gray">#CCCCCC</color>
+    <color name="midnight_blue">#003366</color>
+    <color name="color2">#000000</color>
+    <color name="color1">#FFFFFF</color>
+    <color name="color3">#2196F3</color>
+    <color name="TransparentWhite">#cccccc</color>
+    <color name="color4">#F8F8F8</color>
+    <color name="color5">#CED6DC</color>
+    <color name="color6">#CFCFCF</color>
+
+</resources>

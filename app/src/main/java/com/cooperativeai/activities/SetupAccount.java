@@ -1,0 +1,156 @@
+package com.cooperativeai.activities;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.app.Dialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.util.Patterns;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import com.cooperativeai.R;
+import com.cooperativeai.utils.Constants;
+import com.cooperativeai.utils.SharedPreferenceManager;
+import com.cooperativeai.utils.UtilityMethods;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Objects;
+
+public class SetupAccount extends AppCompatActivity {
+
+    private EditText Isemail, IsUsername, Isfullname;
+    private Button SaveBTN, LogoutBTN;
+    private FirebaseAuth firebaseAuth;
+    private DatabaseReference UsersDatabaseRef;
+    private Dialog dialog;
+    String getemail,email,username,fullname;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_setup_account);
+
+        Isemail = findViewById(R.id.setupemail);
+        Isfullname = findViewById(R.id.setupfullname);
+        IsUsername = findViewById(R.id.setupusername);
+        SaveBTN = findViewById(R.id.savebtn);
+        LogoutBTN = findViewById(R.id.signoutbtn);
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        dialog = UtilityMethods.showDialog(SetupAccount.this, R.layout.layout_loading_dialog);
+        UsersDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        getemail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        Isemail.setText(getemail);
+
+        LogoutBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (UtilityMethods.isInternetAvailable()) {
+                    FirebaseAuth.getInstance().signOut();
+                    startActivity(new Intent(SetupAccount.this, WelcomePage.class));
+                    finish();
+                }
+                else
+                {
+                    Toast.makeText(SetupAccount.this, "No internet connection available", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        SaveBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                email = Objects.requireNonNull(Isemail.getText()).toString().trim();
+                fullname = Objects.requireNonNull(Isfullname.getText()).toString().trim();
+                username = Objects.requireNonNull(IsUsername.getText()).toString().trim();
+
+                if (UtilityMethods.isInternetAvailable()) {
+                    if (!email.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches() && !fullname.isEmpty() && !username.isEmpty()) {
+                        dialog.show();
+                        SaveUserInfo();
+                    }
+                    else {
+                        if (email.isEmpty())
+                            Isemail.setError("Email is required");
+                        if (!email.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches())
+                            Isemail.setError("Invalid email format");
+                        if (fullname.isEmpty())
+                            IsUsername.setError("Name is required");
+                        if (username.isEmpty())
+                            IsUsername.setError("Username is required");
+                        dialog.dismiss();
+                    }
+                }
+                else {
+                    Toast.makeText(SetupAccount.this, "No internet connection available", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
+    }
+
+    private void SaveUserInfo()
+    {
+
+
+        HashMap UserMap = new HashMap();
+        UserMap.put("Fullname",fullname);
+        UserMap.put("Username",username);
+        UserMap.put("Email",email);
+        UserMap.put("Coins","0");
+        UserMap.put("Pictures","0");
+        UserMap.put("Lastuseddate","");
+        UserMap.put("Level",1);
+        UserMap.put("Wallet","0");
+        UserMap.put("Goalcheck","");
+
+
+        String firebaseUserid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        UsersDatabaseRef.child(firebaseUserid).updateChildren(UserMap).addOnCompleteListener(new OnCompleteListener() {
+            @Override
+            public void onComplete(@NonNull Task task) {
+
+                if (task.isSuccessful())
+                {
+
+                    SharedPreferences sharedPreferences = getSharedPreferences(Constants.PREFS_FILE_NAME, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString(Constants.PREFS_USER_EMAIL, email);
+                    editor.putString(Constants.PREFS_USER_NAME, fullname);
+                    editor.putString(Constants.PREFS_USER_USERNAME, username);
+                    editor.putString(Constants.PREFS_USER_ID, firebaseUserid);
+                    editor.putString(Constants.PREFS_USER_COIN_COUNT, "0");
+                    editor.putString(Constants.PREFS_USER_WALLET, "0");
+                    editor.putString(Constants.PREFS_USER_TOTAL_PICTURES, "0");
+                    editor.putString(Constants.PREFS_USER_GOAL_CHECK, "");
+                    editor.putString(Constants.PREFS_USER_LAST_ACCESSED, "");
+                    editor.apply();
+                    SharedPreferenceManager.setUserLevel(SetupAccount.this,1);
+                    if (dialog != null)
+                        dialog.dismiss();
+                    startActivity(new Intent(SetupAccount.this,MainActivity.class));
+                    finish();
+                }
+                else
+                {
+                    dialog.dismiss();
+                    String message = task.getException().getMessage();
+                    Toast.makeText(SetupAccount.this,"Error Occured :"+message,Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+    }
+}

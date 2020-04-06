@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/slide_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Map Based"
+        android:textSize="30sp"
+        android:textColor="@color/color2"
+        android:textAlignment="center"
+        android:padding="5dp"
+        android:layout_marginTop="60dp"/>
+    <TextView
+        android:id="@+id/slide_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Detect Road Condition Using Any Smartphone"
+        android:textSize="20sp"
+        android:textAlignment="center"
+        android:padding="5dp"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_margin="0dp">
+    <ImageView
+        android:id="@+id/slide_img"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/slide_img_1"
+        android:layout_margin="40dp"/>
+    </RelativeLayout>
+
+</LinearLayout>

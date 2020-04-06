@@ -1,0 +1,13 @@
+<!--
+  ~ Created by Sujoy Datta. Copyright (c) 2020. All rights reserved.
+  ~
+  ~ To the person who is reading this..
+  ~ When you finally understand how this works, please do explain it to me too at sujoydatta26@gmail.com
+  ~ P.S.: In case you are planning to use this without mentioning me, you will be met with mean judgemental looks and sarcastic comments.
+  -->
+
+<vector android:height="30dp" android:tint="#EEDD0F"
+    android:viewportHeight="24.0" android:viewportWidth="24.0"
+    android:width="30dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillColor="#FF000000" android:pathData="M10,20v-6h4v6h5v-8h3L12,3 2,12h3v8z"/>
+</vector>
