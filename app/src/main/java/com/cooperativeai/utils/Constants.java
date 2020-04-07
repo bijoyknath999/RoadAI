@@ -9,9 +9,11 @@ public class Constants {
     public static final String PREFS_USER_ID = "user_id";
     public static final String PREFS_USER_PASSWORD = "user_pass";
     public static final String PREFS_USER_LOCATION = "user_location";
+    public static final String PREFS_USER_LOCATION_TEMP = "user_location_temp";
     public static final String PREFS_SIGN_IN_REMEMBER = "no";
     public static final String WRITE_PERMISSION = "write_permission";
     public static final String CAMERA_PERMISSION = "camera_permission";
+    public static final String LOCATION_PERMISSION = "location_permission";
     public static final int AUTO_CAPTURE_DELAY = 60000;
     public static final String PREFS_USER_COIN_COUNT = "user_coins";
     public static final String PREFS_USER_WALLET = "user_wallet";

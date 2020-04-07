@@ -1,6 +1,8 @@
 package com.cooperativeai.activities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -8,6 +10,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +21,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.cooperativeai.R;
@@ -26,7 +30,10 @@ import com.cooperativeai.utils.Constants;
 import com.cooperativeai.utils.DateTimeManager;
 import com.cooperativeai.utils.SharedPreferenceManager;
 import com.cooperativeai.utils.UtilityMethods;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -48,12 +55,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class HomeFragment extends Fragment implements LocationListener {
+public class HomeFragment extends Fragment {
 
     private TextView TextTemp, TextUsername, TextLevel, TextCoins, TextCurrentTime, TextCurrentLocation;
     private LocationManager locationManager;
-    private double latitude = 0.0;
-    private double longitude = 0.0;    private Date lastUsedDate;
+    private Date lastUsedDate;
     private String lastUsedDateAsString;
     private Date currentDate;
     private int userCurrentLevel,level;
@@ -61,9 +67,7 @@ public class HomeFragment extends Fragment implements LocationListener {
     private DatabaseReference UsersDatabaseRef;
     private String currentDateAsString,city,country,UserCurrentGoalCheck,CurrentCoins,CurrentWallet,Username;
     double wallet;
-    private Timer timer;
-    private MainStore mainStore;
-    private CameraActivity cameraActivity;
+
 
 
 
@@ -119,38 +123,8 @@ public class HomeFragment extends Fragment implements LocationListener {
         TextCurrentTime.setText(""+DateTimeManager.getMonthNameWithDate());
         TextCoins.setText("" + SharedPreferenceManager.getUserCoins(getActivity()));
         TextLevel.setText("" + SharedPreferenceManager.getUserLevel(getActivity()));
-
-
-
-        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(getActivity(),Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity()
-                ,Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-        }
-        Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-
-        onLocationChanged(location);
-        getlocation(location);
-
-
-
-
-        OpenWeatherMapHelper helper = new OpenWeatherMapHelper(getString(R.string.openweatherapi));
-        helper.setUnits(Units.METRIC);
-        helper.setLang(Lang.ENGLISH);
-        helper.getCurrentWeatherByGeoCoordinates(latitude,longitude, new CurrentWeatherCallback() {
-            @Override
-            public void onSuccess(CurrentWeather currentWeather) {
-
-                TextTemp.setText(""+currentWeather.getMain().getTempMax()+"° Celsius");
-
-            }
-
-            @Override
-            public void onFailure(Throwable throwable) {
-
-            }
-        });
+        TextTemp.setText(""+SharedPreferenceManager.getUserLocationTemp(getContext()));
+        TextCurrentLocation.setText(""+SharedPreferenceManager.getUserLocation(getContext()));
 
         return view;
     }
@@ -199,57 +173,6 @@ public class HomeFragment extends Fragment implements LocationListener {
 
                 }
 
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        longitude = location.getLongitude();
-        latitude = location.getLatitude();
-
-        TimerTask timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                mainStore.updateGps(latitude,longitude);
-                cameraActivity = new CameraActivity(mainStore);
-            }
-        };
-        timer = new Timer();
-        timer.scheduleAtFixedRate(timerTask, 0, 10000);
-    }
-
-    @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String s) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String s) {
-
-    }
-
-    private void getlocation(Location location)
-    {
-
-        try {
-            Geocoder geocoder = new Geocoder(getActivity());
-            List<Address> addresses = null;
-            addresses = geocoder.getFromLocation(latitude,longitude,1);
-
-            city = addresses.get(0).getLocality();
-            country = addresses.get(0).getCountryName();
-            TextCurrentLocation.setText(""+city+", "+country);
-            SharedPreferenceManager.setUserLocation(getActivity(),city+", "+country);
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(getActivity(),"Error : "+e,Toast.LENGTH_SHORT).show();
-        }
     }
 
     private int reduceLevelCount(){

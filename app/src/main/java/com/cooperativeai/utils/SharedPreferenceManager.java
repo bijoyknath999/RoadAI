@@ -37,6 +37,12 @@ public class SharedPreferenceManager {
         return sharedPreferences.getString(Constants.PREFS_USER_NAME, "");
     }
 
+
+    public static String getUserLocationTemp(Context context){
+        if (sharedPreferences == null)
+            sharedPreferences = context.getSharedPreferences(Constants.PREFS_FILE_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getString(Constants.PREFS_USER_LOCATION_TEMP, "");
+    }
     public static String getUserPassword(Context context)
     {
         if (sharedPreferences == null)
@@ -205,6 +211,16 @@ public class SharedPreferenceManager {
         editor.putString(Constants.PREFS_USER_LAST_ACCESSED, dateAsString);
         editor.apply();
     }
+
+
+    public static void setUserLocationTemp(Context context, String value){
+        if (sharedPreferences == null)
+            sharedPreferences = context.getSharedPreferences(Constants.PREFS_FILE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(Constants.PREFS_USER_LOCATION_TEMP, value);
+        editor.apply();
+    }
+
 
     public static void setUserLocation(Context context, String Value){
         if (sharedPreferences == null)

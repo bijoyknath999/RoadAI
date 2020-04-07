@@ -160,7 +160,6 @@ class DetectorActivity {
         openBackgroundThread();
         LOGGER.i("Running detection on image " + currTimestamp);
         final long startTime = SystemClock.uptimeMillis();
-        Toast.makeText(context.getApplicationContext(), "HEllo", Toast.LENGTH_LONG).show();
         final List<Classifier.Recognition> results = detector.recognizeImage(croppedBitmap);
         lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
 

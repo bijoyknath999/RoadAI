@@ -3,6 +3,7 @@
 package com.cooperativeai.activities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,6 +18,9 @@ import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.params.StreamConfigurationMap;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -38,16 +42,17 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.cooperativeai.R;
+import com.cooperativeai.communication.SocketConnection;
 import com.cooperativeai.statemanagement.MainStore;
 import com.cooperativeai.utils.Constants;
 import com.cooperativeai.utils.SharedPreferenceManager;
 import com.cooperativeai.utils.UtilityMethods;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -89,7 +94,7 @@ public class CameraActivity extends AppCompatActivity {
     private CaptureRequest captureRequest;
     private TextureView.SurfaceTextureListener surfaceTextureListener;
     private File galleryFolder;
-    private boolean hasWritePermission;
+    private boolean hasWritePermission,hasCameraPermission;
     private boolean wasCreated;
     private Timer timer;
     private TextView AutoCapture;
@@ -99,6 +104,7 @@ public class CameraActivity extends AppCompatActivity {
     private boolean hasLocationPermission;
     private DetectorActivity detectorActivity;
     private Bitmap image;
+    private LocationManager locationManager;
 
     protected int previewWidth = 0;
     protected int previewHeight = 0;
@@ -106,22 +112,21 @@ public class CameraActivity extends AppCompatActivity {
 
     protected MainStore mainstore;
 
+    private double lattitude,longitude,lat,lon;
 
-    CameraActivity(MainStore mainStore)
-    {
-        this.mainstore = mainStore;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
         ButterKnife.bind(this);
-
-
         getPermission(Constants.CAMERA_PERMISSION);
         UsersDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
         firebaseAuth = FirebaseAuth.getInstance();
+
+        lattitude = getIntent().getDoubleExtra("lat",0.0);
+        longitude = getIntent().getDoubleExtra("lon",0.0);
+        mainstore=new MainStore(lattitude,longitude);
 
         hasWritePermission = false;
         wasCreated = false;
@@ -206,6 +211,34 @@ public class CameraActivity extends AppCompatActivity {
             });
             builder.show();
         }
+
+
+
+        // For Update gps in every 10 sec
+        FusedLocationProviderClient client = new FusedLocationProviderClient(CameraActivity.this);
+        client.getLastLocation()
+                .addOnSuccessListener(new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        lat = location.getLatitude();
+                        lon = location.getLongitude();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(CameraActivity.this, "Location Fetching failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                mainstore.updateGps(lat,lon);
+            }
+        };
+        timer = new Timer();
+        timer.scheduleAtFixedRate(timerTask, 1, 10000);
 
 
     }
@@ -327,6 +360,8 @@ public class CameraActivity extends AppCompatActivity {
         if (writePermission.equalsIgnoreCase(Constants.CAMERA_PERMISSION)) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST_CODE);
+            else
+                hasCameraPermission = true;
         } else if (writePermission.equalsIgnoreCase(Constants.WRITE_PERMISSION)) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_REQUEST_CODE);
@@ -346,6 +381,7 @@ public class CameraActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                hasCameraPermission = true;
             }
         } else if (requestCode == WRITE_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -374,7 +410,7 @@ public class CameraActivity extends AppCompatActivity {
     @OnClick(R.id.button_take_picture)
     public void clickPicture() {
         getPermission(Constants.WRITE_PERMISSION);
-        if (hasWritePermission) {
+        if (hasWritePermission && hasCameraPermission) {
 
             int level = SharedPreferenceManager.getUserLevel(CameraActivity.this);
             String coins = SharedPreferenceManager.getUserCoins(CameraActivity.this);
@@ -402,6 +438,7 @@ public class CameraActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    getPermission(Constants.CAMERA_PERMISSION);
                     Toast.makeText(CameraActivity.this, "Permissions were not granted", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -471,7 +508,6 @@ public class CameraActivity extends AppCompatActivity {
                 UpdateGoalUpdateLevel(currentCoinCount,currentgoal,currentLevel);
             else
             {
-                Toast.makeText(CameraActivity.this,"test1",Toast.LENGTH_SHORT).show();
                 SaveDataDatabase();
             }
 
@@ -523,7 +559,6 @@ public class CameraActivity extends AppCompatActivity {
             textureView.setSurfaceTextureListener(surfaceTextureListener);
         }
     }
-
     @Override
     protected void onStop() {
         super.onStop();
@@ -531,6 +566,13 @@ public class CameraActivity extends AppCompatActivity {
         closeBackgroundThread();
         if (timer != null)
             timer.cancel();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        mainstore.getConnection().desposeListeners();
     }
 
     private void closeCamera() {
@@ -589,5 +631,4 @@ public class CameraActivity extends AppCompatActivity {
                 SharedPreferenceManager.getUserLevel(CameraActivity.this),SharedPreferenceManager.getUserCoins(CameraActivity.this),
                 SharedPreferenceManager.getUserGoalCheck(CameraActivity.this),SharedPreferenceManager.getUserTotalPicturesCapture(CameraActivity.this));
     }
-
 }
