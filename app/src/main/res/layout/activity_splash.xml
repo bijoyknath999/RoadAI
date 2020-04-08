@@ -12,10 +12,24 @@
         android:layout_height="match_parent">
 
     <ImageView
-        android:layout_width="400dp"
+        android:layout_width="match_parent"
         android:layout_height="400dp"
         android:src="@drawable/roadai"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true" />
+
+        <com.timqi.sectorprogressview.ColorfulRingProgressView
+            android:id="@+id/crpv"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:bgColor="@color/color3"
+            app:fgColorEnd="@color/color1"
+            app:fgColorStart="@color/color3"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="60dp"
+            app:percent="50"
+            app:startAngle="0"
+            app:strokeWidth="20dp"
+            android:layout_alignParentBottom="true" />
 
 
     </RelativeLayout>

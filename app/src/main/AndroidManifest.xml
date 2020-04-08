@@ -23,7 +23,8 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".activities.ForgetPassword"
             android:theme="@style/AppTheme2"/>
-        <activity android:name=".activities.SetupAccount" />
+        <activity android:name=".activities.SetupAccount"
+            android:theme="@style/AppTheme2"/>
         <activity android:name=".activities.HomeFragment" />
         <activity android:name=".activities.Intro"
             android:theme="@style/AppTheme2"/>
@@ -32,7 +33,6 @@
         <activity android:name=".activities.ProfileFragment" />
         <activity android:name=".activities.CameraActivity"
             android:theme="@style/cameraTheme"/>
-        <activity android:name=".activities.LoginActivity" />
         <activity android:name=".activities.RegistrationActivity"
             android:theme="@style/AppTheme2"/>
         <activity android:name=".activities.SplashActivity"

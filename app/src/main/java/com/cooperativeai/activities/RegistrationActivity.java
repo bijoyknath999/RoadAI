@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -38,6 +39,8 @@ public class RegistrationActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private Dialog dialog;
     private DatabaseReference UsersDatabaseRef;
+    private Dialog noconnectionDialog;
+
 
 
     @Override
@@ -53,6 +56,9 @@ public class RegistrationActivity extends AppCompatActivity {
         SignUpBtn = findViewById(R.id.signupbtn);
         SignInBtn = findViewById(R.id.already_signinbtn);
 
+        noconnectionDialog = UtilityMethods.showDialogAlert(RegistrationActivity.this, R.layout.dialog_box);
+
+
         firebaseAuth = FirebaseAuth.getInstance();
         dialog = UtilityMethods.showDialog(RegistrationActivity.this, R.layout.layout_loading_dialog);
         UsersDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
@@ -62,6 +68,7 @@ public class RegistrationActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 startActivity(new Intent(RegistrationActivity.this, WelcomePage.class));
+                overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
                 finish();
 
             }
@@ -101,8 +108,16 @@ public class RegistrationActivity extends AppCompatActivity {
                     }
                 }
                 else{
-                    Toast.makeText(RegistrationActivity.this, "No internet connection available", Toast.LENGTH_SHORT).show();
-                }
+                    noconnectionDialog.show();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (noconnectionDialog.isShowing())
+                            {
+                                noconnectionDialog.dismiss();
+                            }
+                        }
+                    },2500);                }
 
             }
         });
@@ -189,6 +204,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     if (task.isSuccessful())
                     {
                         startActivity(new Intent(RegistrationActivity.this, WelcomePage.class));
+                        overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
                         finish();
                         FirebaseAuth.getInstance().signOut();
                         Toast.makeText(RegistrationActivity.this, "We've sent you a verification mail. Please check your mail inbox!!",Toast.LENGTH_LONG).show();
@@ -196,6 +212,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     else
                     {
                         String error = task.getException().getMessage();
+                        overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
                         Toast.makeText(RegistrationActivity.this,"Error: "+error,Toast.LENGTH_SHORT).show();
                         FirebaseAuth.getInstance().signOut();
                     }
@@ -205,4 +222,9 @@ public class RegistrationActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);    }
 }

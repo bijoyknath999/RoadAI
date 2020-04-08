@@ -24,6 +24,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.timqi.sectorprogressview.ColorfulRingProgressView;
+
+import static maes.tech.intentanim.CustomIntent.customType;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -31,6 +34,8 @@ public class SplashActivity extends AppCompatActivity {
     private DatabaseReference UsersDatabaseRef;
     private String email, password, fullname,username,coins,wallet,pictures,lastuseddate,goalcheck;
     private int level;
+
+    private ColorfulRingProgressView crpv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +53,10 @@ public class SplashActivity extends AppCompatActivity {
 
         UsersDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
+        crpv = (ColorfulRingProgressView) findViewById(R.id.crpv);
+        crpv.animateIndeterminate();
+
+
 
 
         Handler handler = new Handler();
@@ -62,6 +71,7 @@ public class SplashActivity extends AppCompatActivity {
                     IntroIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(IntroIntent);
                     finish();
+                    overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
                 }
                 else{
                     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -84,7 +94,7 @@ public class SplashActivity extends AppCompatActivity {
                     }
                 }
             }
-        }, 1000);
+        }, 2000);
     }
 
     private void CheckUserExistence()
@@ -118,6 +128,7 @@ public class SplashActivity extends AppCompatActivity {
         SignAct.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(SignAct);
         finish();
+        overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
     }
 
     private void SendUserMainActivity()
@@ -164,6 +175,7 @@ public class SplashActivity extends AppCompatActivity {
         NextIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(NextIntent);
         finish();
+        overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
 
     }
 
@@ -173,5 +185,6 @@ public class SplashActivity extends AppCompatActivity {
         SetupIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(SetupIntent);
         finish();
+        overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
     }
 }

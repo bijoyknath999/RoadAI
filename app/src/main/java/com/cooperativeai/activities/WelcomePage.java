@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,7 +52,7 @@ import java.util.Objects;
 public class WelcomePage extends AppCompatActivity {
 
     private Button LoginBTN, SignupBTN;
-    private Dialog dialog;
+    private Dialog dialog, noconnectionDialog;
     private String email, password, fullname,username,coins,wallet,pictures,lastuseddate,goalcheck;
     private int level;
     private FirebaseAuth firebaseAuth;
@@ -72,6 +73,8 @@ public class WelcomePage extends AppCompatActivity {
         LoginBTN = (Button) findViewById(R.id.welcome_login_btn);
         firebaseAuth = FirebaseAuth.getInstance();
         UsersDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        noconnectionDialog = UtilityMethods.showDialogAlert(WelcomePage.this, R.layout.dialog_box);
+
 
 
         GoogleSignInOptions gso = new  GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -147,7 +150,16 @@ public class WelcomePage extends AppCompatActivity {
                 else
                 {
                     dialog.dismiss();
-                    Toast.makeText(WelcomePage.this, "No internet connection available", Toast.LENGTH_SHORT).show();
+                    noconnectionDialog.show();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (noconnectionDialog.isShowing())
+                            {
+                                noconnectionDialog.dismiss();
+                            }
+                        }
+                    },2500);
                 }
             }
         });
@@ -184,8 +196,17 @@ public class WelcomePage extends AppCompatActivity {
                     }
                 }
                 else{
-                    Toast.makeText(WelcomePage.this, "No internet connection available", Toast.LENGTH_SHORT).show();
-                }
+
+                    noconnectionDialog.show();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (noconnectionDialog.isShowing())
+                            {
+                                noconnectionDialog.dismiss();
+                            }
+                        }
+                    },2500);                }
 
             }
         });
@@ -237,6 +258,7 @@ public class WelcomePage extends AppCompatActivity {
                             if (!dataSnapshot.hasChild(current_user_id))
                             {
                                 startActivity(new Intent(WelcomePage.this, SetupAccount.class));
+                                overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
                                 finish();
                                 dialog.dismiss();
                             }
@@ -244,6 +266,7 @@ public class WelcomePage extends AppCompatActivity {
                             {
                                 SavaData();
                                 startActivity(new Intent(WelcomePage.this, MainActivity.class));
+                                overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
                                 finish();
                                 dialog.dismiss();
                             }
@@ -304,6 +327,7 @@ public class WelcomePage extends AppCompatActivity {
                     if (!dataSnapshot.hasChild(current_user_id))
                     {
                         startActivity(new Intent(WelcomePage.this, SetupAccount.class));
+                        overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
                         finish();
                         dialog.dismiss();
 
@@ -330,6 +354,7 @@ public class WelcomePage extends AppCompatActivity {
                     {
                         SavaData();
                         startActivity(new Intent(WelcomePage.this, MainActivity.class));
+                        overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
                         finish();
                         Toast.makeText(WelcomePage.this, "Loged in Successfully", Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
@@ -402,5 +427,11 @@ public class WelcomePage extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
     }
 }

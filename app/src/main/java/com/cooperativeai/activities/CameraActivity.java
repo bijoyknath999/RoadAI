@@ -4,6 +4,7 @@ package com.cooperativeai.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -113,6 +114,8 @@ public class CameraActivity extends AppCompatActivity {
     protected MainStore mainstore;
 
     private double lattitude,longitude,lat,lon;
+    private Dialog noconnectionDialog;
+
 
 
     @Override
@@ -123,6 +126,9 @@ public class CameraActivity extends AppCompatActivity {
         getPermission(Constants.CAMERA_PERMISSION);
         UsersDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
         firebaseAuth = FirebaseAuth.getInstance();
+        noconnectionDialog = UtilityMethods.showDialogAlert(CameraActivity.this, R.layout.dialog_box);
+
+
 
         lattitude = getIntent().getDoubleExtra("lat",0.0);
         longitude = getIntent().getDoubleExtra("lon",0.0);
@@ -231,14 +237,14 @@ public class CameraActivity extends AppCompatActivity {
                     }
                 });
 
-        TimerTask timerTask = new TimerTask() {
+        TimerTask timerTask2 = new TimerTask() {
             @Override
             public void run() {
                 mainstore.updateGps(lat,lon);
             }
         };
         timer = new Timer();
-        timer.scheduleAtFixedRate(timerTask, 1, 10000);
+        timer.scheduleAtFixedRate(timerTask2, 1, 10000);
 
 
     }
@@ -430,8 +436,16 @@ public class CameraActivity extends AppCompatActivity {
                 takePicture();
             }
             else {
-                Toast.makeText(CameraActivity.this, "No internet connection available", Toast.LENGTH_SHORT).show();
-            }
+                noconnectionDialog.show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (noconnectionDialog.isShowing())
+                        {
+                            noconnectionDialog.dismiss();
+                        }
+                    }
+                },2500);            }
         }
         else
         {
@@ -600,6 +614,7 @@ public class CameraActivity extends AppCompatActivity {
         super.onBackPressed();
         startActivity(new Intent(CameraActivity.this, MainActivity.class));
         finish();
+        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
     }
 
     private void UpdateGoalUpdateLevel(String currentCoinCount, String currentgoal, int currentLevel)

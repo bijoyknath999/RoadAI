@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -27,6 +28,8 @@ public class ForgetPassword extends AppCompatActivity {
     private String Email;
     private FirebaseAuth firebaseAuth;
     private Dialog dialog;
+    private Dialog noconnectionDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +41,8 @@ public class ForgetPassword extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
         dialog = UtilityMethods.showDialog(ForgetPassword.this, R.layout.layout_loading_dialog);
+        noconnectionDialog = UtilityMethods.showDialogAlert(ForgetPassword.this, R.layout.dialog_box);
+
 
         ResetBTN.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,8 +64,16 @@ public class ForgetPassword extends AppCompatActivity {
                     }
                 }
                 else{
-                    Toast.makeText(ForgetPassword.this, "No internet connection available", Toast.LENGTH_SHORT).show();
-                }
+                    noconnectionDialog.show();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (noconnectionDialog.isShowing())
+                            {
+                                noconnectionDialog.dismiss();
+                            }
+                        }
+                    },2500);                }
             }
         });
 
@@ -76,6 +89,7 @@ public class ForgetPassword extends AppCompatActivity {
                 {
                     Toast.makeText(ForgetPassword.this,"Please check your mail inbox!!",Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(ForgetPassword.this,WelcomePage.class));
+                    overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
                     finish();
                 }
                 else {
@@ -84,5 +98,11 @@ public class ForgetPassword extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
     }
 }

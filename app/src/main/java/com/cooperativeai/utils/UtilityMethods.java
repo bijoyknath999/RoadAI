@@ -9,9 +9,13 @@
 package com.cooperativeai.utils;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.os.Build;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 
 import com.cooperativeai.R;
 
@@ -40,4 +44,15 @@ public class UtilityMethods {
 
         return dialog;
     }
+
+
+    public static Dialog showDialogAlert(Context context, int resourceId2){
+        View dialogView = ((Activity) context).getLayoutInflater().inflate(resourceId2, null);
+        Dialog dialog2 = new Dialog(context, R.style.loadingDialog);
+        dialog2.setContentView(dialogView);
+        dialog2.setCancelable(true);
+        dialog2.setCanceledOnTouchOutside(true);
+        return dialog2;
+    }
+
 }

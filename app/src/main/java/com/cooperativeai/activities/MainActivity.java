@@ -3,6 +3,7 @@ package com.cooperativeai.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,6 +14,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -32,6 +34,7 @@ import com.cooperativeai.R;
 import com.cooperativeai.utils.Constants;
 import com.cooperativeai.utils.DateTimeManager;
 import com.cooperativeai.utils.SharedPreferenceManager;
+import com.cooperativeai.utils.UtilityMethods;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -69,6 +72,8 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
     private static final int LOCATION_REQUEST_CODE = 31;
     private String city,country;
     private LocationManager locationManager;
+    private Dialog noconnectionDialog;
+
 
 
     @Override
@@ -84,6 +89,9 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.main_toolbar);
+
+        noconnectionDialog = UtilityMethods.showDialogAlert(MainActivity.this, R.layout.dialog_box);
+
 
 
         UserAcc = FirebaseDatabase.getInstance().getReference().child("Users");
@@ -173,11 +181,11 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
             @Override
             public void onCentreButtonClick() {
 
-                startActivity(new Intent(MainActivity.this,CameraActivity.class));
                 Intent CamIntent = new Intent(MainActivity.this, CameraActivity.class);
                 CamIntent.putExtra("lat",latitude);
                 CamIntent.putExtra("lon",longitude);
                 startActivity(CamIntent);
+                overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
 
             }
 
@@ -277,6 +285,7 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
             case R.id.menu_logout:
                 FirebaseAuth.getInstance().signOut();
                 startActivity(new Intent(MainActivity.this,WelcomePage.class));
+                overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
                 finish();
                 break;
         }
@@ -350,5 +359,29 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
             e.printStackTrace();
             Toast.makeText(MainActivity.this,"Error : "+e,Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!UtilityMethods.isInternetAvailable())
+        {
+            noconnectionDialog.show();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (noconnectionDialog.isShowing())
+                    {
+                        noconnectionDialog.dismiss();
+                    }
+                }
+            },2500);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
     }
 }

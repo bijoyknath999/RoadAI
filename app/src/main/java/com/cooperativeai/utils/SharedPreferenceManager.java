@@ -275,49 +275,6 @@ public class SharedPreferenceManager {
     }
 
 
-
-    public static void setDataDatabaseString(Context context,String DatabasePath1,String Val1)
-    {
-        DatabaseReference UsersDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        UsersDatabaseRef.child(UID).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
-            {
-                if (dataSnapshot.exists())
-                {
-                    UsersDatabaseRef.child(UID).child(DatabasePath1).setValue(Val1);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    public static void setDataDatabaseInt(Context context,String DatabasePath1,int Val1)
-    {
-        DatabaseReference UsersDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        UsersDatabaseRef.child(UID).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
-            {
-                if (dataSnapshot.exists())
-                {
-                    UsersDatabaseRef.child(UID).child(DatabasePath1).setValue(Val1);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
     public static void setDataDatabase4value(Context context,String DatabasePath1,String DatabasePath2,String DatabasePath3,String DatabasePath4,int Val1,String Val2,String Val3,String Val4)
     {
         DatabaseReference UsersDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");

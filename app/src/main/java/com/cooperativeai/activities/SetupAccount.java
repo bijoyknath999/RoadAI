@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -34,6 +35,8 @@ public class SetupAccount extends AppCompatActivity {
     private DatabaseReference UsersDatabaseRef;
     private Dialog dialog;
     String getemail,email,username,fullname;
+    private Dialog noconnectionDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +48,8 @@ public class SetupAccount extends AppCompatActivity {
         IsUsername = findViewById(R.id.setupusername);
         SaveBTN = findViewById(R.id.savebtn);
         LogoutBTN = findViewById(R.id.signoutbtn);
+        noconnectionDialog = UtilityMethods.showDialogAlert(SetupAccount.this, R.layout.dialog_box);
+
 
         firebaseAuth = FirebaseAuth.getInstance();
         dialog = UtilityMethods.showDialog(SetupAccount.this, R.layout.layout_loading_dialog);
@@ -58,12 +63,21 @@ public class SetupAccount extends AppCompatActivity {
                 if (UtilityMethods.isInternetAvailable()) {
                     FirebaseAuth.getInstance().signOut();
                     startActivity(new Intent(SetupAccount.this, WelcomePage.class));
+                    overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
                     finish();
                 }
                 else
                 {
-                    Toast.makeText(SetupAccount.this, "No internet connection available", Toast.LENGTH_SHORT).show();
-                }
+                    noconnectionDialog.show();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (noconnectionDialog.isShowing())
+                            {
+                                noconnectionDialog.dismiss();
+                            }
+                        }
+                    },2500);                }
             }
         });
 
@@ -92,8 +106,16 @@ public class SetupAccount extends AppCompatActivity {
                     }
                 }
                 else {
-                    Toast.makeText(SetupAccount.this, "No internet connection available", Toast.LENGTH_SHORT).show();
-                }
+                    noconnectionDialog.show();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (noconnectionDialog.isShowing())
+                            {
+                                noconnectionDialog.dismiss();
+                            }
+                        }
+                    },2500);                }
             }
         });
 
@@ -141,6 +163,7 @@ public class SetupAccount extends AppCompatActivity {
                     if (dialog != null)
                         dialog.dismiss();
                     startActivity(new Intent(SetupAccount.this,MainActivity.class));
+                    overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
                     finish();
                 }
                 else
@@ -152,5 +175,11 @@ public class SetupAccount extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
     }
 }

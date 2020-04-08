@@ -3,6 +3,7 @@ package com.cooperativeai.activities;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -12,6 +13,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,6 +69,8 @@ public class HomeFragment extends Fragment {
     private DatabaseReference UsersDatabaseRef;
     private String currentDateAsString,city,country,UserCurrentGoalCheck,CurrentCoins,CurrentWallet,Username;
     double wallet;
+    private Dialog noconnectionDialog;
+
 
 
 
@@ -85,6 +89,9 @@ public class HomeFragment extends Fragment {
         TextLevel = view.findViewById(R.id.home_level);
         TextCurrentTime = view.findViewById(R.id.home_current_date_time);
         TextCurrentLocation = view.findViewById(R.id.home_current_location);
+
+        noconnectionDialog = UtilityMethods.showDialogAlert(getContext(), R.layout.dialog_box);
+
 
 
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("Home");
@@ -116,8 +123,16 @@ public class HomeFragment extends Fragment {
         }
         else
         {
-            Toast.makeText(getContext(), "No internet connection available", Toast.LENGTH_SHORT).show();
-        }
+            noconnectionDialog.show();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (noconnectionDialog.isShowing())
+                    {
+                        noconnectionDialog.dismiss();
+                    }
+                }
+            },2500);        }
 
         TextUsername.setText("Welcome, " + SharedPreferenceManager.getUserUsername(getContext()));
         TextCurrentTime.setText(""+DateTimeManager.getMonthNameWithDate());
