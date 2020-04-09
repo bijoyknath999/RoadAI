@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cooperativeai.R;
+import com.cooperativeai.utils.UtilityMethods;
 
 public class Intro extends AppCompatActivity {
 
@@ -24,6 +26,8 @@ public class Intro extends AppCompatActivity {
     private TextView[] dots;
 
     private SlideAdapter slideAdapter;
+    private Dialog dialog;
+
 
 
     @Override
@@ -38,6 +42,8 @@ public class Intro extends AppCompatActivity {
         slideAdapter = new SlideAdapter(this);
         SlidePager.setAdapter(slideAdapter);
 
+        dialog = UtilityMethods.showDialog(Intro.this, R.layout.layout_loading_dialog);
+
         addDots(0);
         SlidePager.addOnPageChangeListener(viewListener);
 
@@ -48,6 +54,8 @@ public class Intro extends AppCompatActivity {
                 IntroIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(IntroIntent);
                 finish();
+                dialog.show();
+                overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
 
                 SharedPreferences sharedPreferences = getSharedPreferences("sharedPreferences",MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -97,4 +105,10 @@ public class Intro extends AppCompatActivity {
 
         }
     };
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+    }
 }

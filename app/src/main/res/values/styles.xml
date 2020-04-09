@@ -38,4 +38,12 @@
         <item name="android:backgroundDimEnabled">true</item>
     </style>
 
+
+    <style name="drawerText" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/color1</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">normal</item>
+
+    </style>
+
 </resources>

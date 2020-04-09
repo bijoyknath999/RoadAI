@@ -54,12 +54,9 @@ dependencies {
     implementation 'com.github.scottyab:showhidepasswordedittext:0.8'
     implementation 'com.github.armcha:SpaceNavigationView:1.6.0'
     implementation 'com.github.KwabenBerko:OpenWeatherMap-Android-Library:2.0.2'
-    implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'com.squareup.okhttp3:okhttp:4.0.1'
-    implementation 'com.squareup.retrofit2:retrofit:2.6.1'
-    implementation 'com.squareup.retrofit2:converter-gson:2.6.1'
     implementation 'com.github.hajiyevelnur92:intentanimation:1.0'
     implementation 'com.timqi.sectorprogressview:library:2.0.1'
+    implementation 'com.github.shrikanth7698:Custom-Navigation-Drawer:v0.0.1'
 
 
     //<-- Socket and Redux
@@ -67,7 +64,7 @@ dependencies {
     implementation "com.github.trikita:jedux:-SNAPSHOT"
     implementation 'com.google.code.gson:gson:2.8.6'
 
-    implementation ('io.socket:socket.io-client:1.0.0') {
+    implementation('io.socket:socket.io-client:1.0.0') {
         exclude group: 'org.json', module: 'json'
     }
 

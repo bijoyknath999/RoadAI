@@ -1,6 +1,7 @@
 
 package com.cooperativeai.activities;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -34,6 +35,8 @@ public class SplashActivity extends AppCompatActivity {
     private DatabaseReference UsersDatabaseRef;
     private String email, password, fullname,username,coins,wallet,pictures,lastuseddate,goalcheck;
     private int level;
+    private Dialog noconnectionDialog;
+
 
     private ColorfulRingProgressView crpv;
 
@@ -51,6 +54,7 @@ public class SplashActivity extends AppCompatActivity {
 
         }
 
+        noconnectionDialog = UtilityMethods.showDialogAlert(SplashActivity.this, R.layout.dialog_box);
         UsersDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
         crpv = (ColorfulRingProgressView) findViewById(R.id.crpv);
@@ -88,8 +92,16 @@ public class SplashActivity extends AppCompatActivity {
                         }
                         else
                         {
-                            CheckUserExistence();
-                            Toast.makeText(SplashActivity.this, "No internet connection available", Toast.LENGTH_SHORT).show();
+                            noconnectionDialog.show();
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (noconnectionDialog.isShowing())
+                                    {
+                                        noconnectionDialog.dismiss();
+                                    }
+                                }
+                            },2500);
                         }
                     }
                 }
@@ -105,13 +117,13 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot)
             {
-                if (!dataSnapshot.hasChild(current_user_id))
+                if (dataSnapshot.hasChild(current_user_id))
                 {
-                    SendUserSetupAccount();
+                    SendUserMainActivity();
                 }
                 else
                 {
-                    SendUserMainActivity();
+                    SendUserSetupAccount();
                 }
             }
 

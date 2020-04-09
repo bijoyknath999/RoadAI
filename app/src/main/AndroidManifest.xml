@@ -6,14 +6,12 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <uses-feature android:name="android.hardware.camera2.full" />
 
     <application
-        android:name=".activities.Offline"
-        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -21,21 +19,34 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".activities.ForgetPassword"
-            android:theme="@style/AppTheme2"/>
-        <activity android:name=".activities.SetupAccount"
-            android:theme="@style/AppTheme2"/>
+        <activity android:name=".activities.EditProfile"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:name=".activities.ForgetPassword"
+            android:theme="@style/AppTheme2"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:name=".activities.SetupAccount"
+            android:theme="@style/AppTheme2"
+            android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".activities.HomeFragment" />
-        <activity android:name=".activities.Intro"
-            android:theme="@style/AppTheme2"/>
-        <activity android:name=".activities.WelcomePage"
-            android:theme="@style/AppTheme2"/>
+        <activity
+            android:name=".activities.Intro"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activities.WelcomePage"
+            android:theme="@style/AppTheme2"
+            android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".activities.ProfileFragment" />
-        <activity android:name=".activities.CameraActivity"
-            android:theme="@style/cameraTheme"/>
-        <activity android:name=".activities.RegistrationActivity"
-            android:theme="@style/AppTheme2"/>
-        <activity android:name=".activities.SplashActivity"
+        <activity
+            android:name=".activities.CameraActivity"
+            android:theme="@style/cameraTheme" />
+        <activity
+            android:name=".activities.RegistrationActivity"
+            android:theme="@style/AppTheme2"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:name=".activities.SplashActivity"
             android:theme="@style/cameraTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

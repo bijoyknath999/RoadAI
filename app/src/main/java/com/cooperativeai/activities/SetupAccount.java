@@ -21,8 +21,12 @@ import com.cooperativeai.utils.UtilityMethods;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -65,6 +69,7 @@ public class SetupAccount extends AppCompatActivity {
                     startActivity(new Intent(SetupAccount.this, WelcomePage.class));
                     overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
                     finish();
+                    dialog.show();
                 }
                 else
                 {
@@ -85,18 +90,18 @@ public class SetupAccount extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 email = Objects.requireNonNull(Isemail.getText()).toString().trim();
-                fullname = Objects.requireNonNull(Isfullname.getText()).toString().trim();
+                fullname = Objects.requireNonNull(Isfullname.getText()).toString();
                 username = Objects.requireNonNull(IsUsername.getText()).toString().trim();
 
                 if (UtilityMethods.isInternetAvailable()) {
                     if (!email.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches() && !fullname.isEmpty() && !username.isEmpty()) {
                         dialog.show();
-                        SaveUserInfo();
+                        CheckUsername();
                     }
                     else {
                         if (email.isEmpty())
                             Isemail.setError("Email is required");
-                        if (!email.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches())
+                        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches())
                             Isemail.setError("Invalid email format");
                         if (fullname.isEmpty())
                             IsUsername.setError("Name is required");
@@ -121,6 +126,31 @@ public class SetupAccount extends AppCompatActivity {
 
 
     }
+
+    private void CheckUsername()
+    {
+        Query query = UsersDatabaseRef.orderByChild("Username").equalTo(username);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists())
+                {
+                    IsUsername.setError("Username already exists");
+                    dialog.dismiss();
+                }
+                else
+                {
+                    SaveUserInfo();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 
     private void SaveUserInfo()
     {
@@ -181,5 +211,14 @@ public class SetupAccount extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (dialog!= null && dialog.isShowing())
+        {
+            dialog.dismiss();
+        }
     }
 }

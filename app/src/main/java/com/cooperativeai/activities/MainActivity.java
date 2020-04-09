@@ -73,6 +73,8 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
     private String city,country;
     private LocationManager locationManager;
     private Dialog noconnectionDialog;
+    private Dialog dialog;
+
 
 
 
@@ -86,11 +88,54 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
         spaceNavigationView.addSpaceItem(new SpaceItem("Home", R.drawable.ic_home));
         spaceNavigationView.addSpaceItem(new SpaceItem("Profile", R.drawable.ic_profile));
 
+
+        spaceNavigationView.setSpaceOnClickListener(new SpaceOnClickListener() {
+            @Override
+            public void onCentreButtonClick() {
+
+                Intent CamIntent = new Intent(MainActivity.this, CameraActivity.class);
+                CamIntent.putExtra("lat",latitude);
+                CamIntent.putExtra("lon",longitude);
+                startActivity(CamIntent);
+                overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
+                dialog.show();
+
+            }
+
+            @Override
+            public void onItemClick(int itemIndex, String itemName) {
+
+                if (itemIndex==0)
+                {
+                    selectedFragment = new HomeFragment();
+                }
+
+                else if (itemIndex==1)
+                {
+                    selectedFragment = new ProfileFragment();
+
+                }
+
+                if (selectedFragment != null)
+                {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.home_container,selectedFragment).commit();
+                }
+
+            }
+
+            @Override
+            public void onItemReselected(int itemIndex, String itemName) {
+
+            }
+        });
+
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.main_toolbar);
 
         noconnectionDialog = UtilityMethods.showDialogAlert(MainActivity.this, R.layout.dialog_box);
+        dialog = UtilityMethods.showDialog(MainActivity.this, R.layout.layout_loading_dialog);
+
 
 
 
@@ -100,6 +145,11 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("Home");
+        if (savedInstanceState == null)
+        {
+            getSupportFragmentManager().beginTransaction().replace(R.id.home_container,
+                    new HomeFragment()).commit();
+        }
         toolbar.setTitleTextColor(ContextCompat.getColor(this,R.color.color1));
         actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,R.string.drawer_open,R.string.drawer_close);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
@@ -107,9 +157,6 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
         actionBarDrawerToggle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.color1));
         actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
 
-
-        getSupportFragmentManager().beginTransaction().replace(R.id.home_container,
-                new HomeFragment()).commit();
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -176,63 +223,6 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
             }
         });
 
-
-        spaceNavigationView.setSpaceOnClickListener(new SpaceOnClickListener() {
-            @Override
-            public void onCentreButtonClick() {
-
-                Intent CamIntent = new Intent(MainActivity.this, CameraActivity.class);
-                CamIntent.putExtra("lat",latitude);
-                CamIntent.putExtra("lon",longitude);
-                startActivity(CamIntent);
-                overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
-
-            }
-
-            @Override
-            public void onItemClick(int itemIndex, String itemName) {
-
-                if (itemIndex==0)
-                {
-                    selectedFragment = new HomeFragment();
-                }
-
-                else if (itemIndex==1)
-                {
-                    selectedFragment = new ProfileFragment();
-
-                }
-
-                if (selectedFragment != null)
-                {
-                    getSupportFragmentManager().beginTransaction().replace(R.id.home_container,selectedFragment).commit();
-                }
-
-            }
-
-            @Override
-            public void onItemReselected(int itemIndex, String itemName) {
-
-            }
-        });
-
-        if (selectedFragment == new HomeFragment())
-        {
-
-        }
-
-        //Navugation Menu
-
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem)
-
-            {
-                UserMenuSelector (menuItem);
-                return false;
-            }
-        });
-
     }
 
 
@@ -282,14 +272,55 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
     {
         switch (menuItem.getItemId())
         {
+            case R.id.menu_about_us:
+                break;
+            case R.id.menu_follow_us:
+                break;
             case R.id.menu_logout:
                 FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(MainActivity.this,WelcomePage.class));
-                overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
+                setData();
+                dialog.show();
                 finish();
                 break;
         }
 
+    }
+
+    private void setData()
+    {
+        String checkRem = SharedPreferenceManager.getSignRemember(MainActivity.this);
+        if (checkRem.equals("yes"))
+        {
+            SharedPreferences sharedPreferences = getSharedPreferences(Constants.PREFS_FILE_NAME, MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.remove(Constants.PREFS_USER_NAME);
+            editor.remove(Constants.PREFS_USER_USERNAME);
+            editor.remove(Constants.PREFS_USER_ID);
+            editor.remove(Constants.PREFS_USER_COIN_COUNT);
+            editor.remove(Constants.PREFS_USER_WALLET);
+            editor.remove(Constants.PREFS_USER_TOTAL_PICTURES);
+            editor.remove(Constants.PREFS_USER_GOAL_CHECK);
+            editor.remove(Constants.PREFS_USER_LAST_ACCESSED);
+            editor.commit();
+        }
+        else
+        {
+            SharedPreferences sharedPreferences = getSharedPreferences(Constants.PREFS_FILE_NAME, MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.remove(Constants.PREFS_USER_EMAIL);
+            editor.remove(Constants.PREFS_USER_PASSWORD);
+            editor.remove(Constants.PREFS_USER_NAME);
+            editor.remove(Constants.PREFS_USER_USERNAME);
+            editor.remove(Constants.PREFS_USER_ID);
+            editor.remove(Constants.PREFS_USER_COIN_COUNT);
+            editor.remove(Constants.PREFS_USER_WALLET);
+            editor.remove(Constants.PREFS_USER_TOTAL_PICTURES);
+            editor.remove(Constants.PREFS_USER_GOAL_CHECK);
+            editor.remove(Constants.PREFS_USER_LAST_ACCESSED);
+            editor.commit();
+        }
+        startActivity(new Intent(MainActivity.this,WelcomePage.class));
+        overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
     }
 
 
@@ -381,7 +412,16 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        moveTaskToBack(true);
         overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (dialog!= null && dialog.isShowing())
+        {
+            dialog.dismiss();
+        }
     }
 }

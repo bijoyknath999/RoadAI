@@ -24,7 +24,7 @@
             android:id="@+id/welcome_image_1"
             android:layout_width="110dp"
             android:layout_height="110dp"
-            android:src="@drawable/roadai_copy_365x236"
+            android:src="@drawable/roadai2"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
             app:civ_border_color="@color/TransparentWhite"
@@ -41,15 +41,15 @@
             android:padding="10dp"
             android:background="@drawable/loginpage_custom_box" />
 
-        <com.google.android.material.textfield.TextInputEditText
+        <com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText
+            android:id="@+id/login_password"
+            android:padding="10dp"
+            android:layout_margin="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/login_password"
-            android:inputType="textPassword"
             android:hint="Password"
-            android:layout_margin="10dp"
-            android:padding="10dp"
-            android:background="@drawable/loginpage_custom_box" />
+            android:inputType="textPassword"
+            android:background="@drawable/loginpage_custom_box"/>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">

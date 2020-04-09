@@ -1,23 +1,29 @@
 package com.cooperativeai.activities;
 
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.cooperativeai.R;
 import com.cooperativeai.utils.SharedPreferenceManager;
+import com.cooperativeai.utils.UtilityMethods;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 
 public class ProfileFragment extends Fragment {
 
     private TextView ProfileFullname, ProfileLocation, ProfileLevel,ProfileTotalPics,ProfileTotalCoins;
-    private DatabaseReference UsersRef;
-    private FirebaseAuth firebaseAuth;
+    private ImageButton Edit_Profile;
+    private Dialog dialog;
+
 
     @Nullable
     @Override
@@ -30,6 +36,17 @@ public class ProfileFragment extends Fragment {
         ProfileLevel = view.findViewById(R.id.profile_level);
         ProfileTotalPics = view.findViewById(R.id.profile_total_pictures);
         ProfileTotalCoins = view.findViewById(R.id.profile_total_coins);
+        Edit_Profile = view.findViewById(R.id.profile_edit);
+
+        dialog = UtilityMethods.showDialog(getActivity(), R.layout.layout_loading_dialog);
+
+
+        Edit_Profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SendUserEditProfile();
+            }
+        });
 
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("Profile");
 
@@ -42,5 +59,22 @@ public class ProfileFragment extends Fragment {
 
         return view;
 
+    }
+
+    private void SendUserEditProfile()
+    {
+        Intent EditProfileintent = new Intent(getContext(),EditProfile.class);
+        startActivity(EditProfileintent);
+        getActivity().overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
+        dialog.show();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (dialog!= null && dialog.isShowing())
+        {
+            dialog.dismiss();
+        }
     }
 }

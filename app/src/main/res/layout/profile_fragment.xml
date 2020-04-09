@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/color4"
     android:paddingBottom="10dp">
 
@@ -20,11 +21,44 @@
             android:padding="20dp"
             android:background="@color/color1">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:layout_marginTop="10dp">
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:layout_height="wrap_content"
+                    android:gravity="right">
             <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_width="110dp"
                 android:layout_height="110dp"
-                android:src="@drawable/male"
-                android:layout_marginTop="10dp"/>
+                android:src="@drawable/smiley"
+                app:civ_circle_background_color="@color/color3"
+                app:civ_border_color="@color/colorAccent"
+                app:civ_border_width="2dp"
+                android:layout_marginRight="3.5dp"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:gravity="right">
+
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/profile_edit"
+                        android:src="@drawable/ic_edit"
+                        android:background="@color/color1"
+                        android:layout_marginRight="10dp"/>
+                </RelativeLayout>
+
+            </LinearLayout>
 
             <TextView
                 android:layout_width="match_parent"

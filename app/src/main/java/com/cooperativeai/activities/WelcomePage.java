@@ -130,7 +130,7 @@ public class WelcomePage extends AppCompatActivity {
 
         String checkRem = SharedPreferenceManager.getSignRemember(WelcomePage.this);
 
-        if (checkRem == "yes")
+        if (checkRem.equals("yes"))
         {
             Isemail.setText(SharedPreferenceManager.getUserEmail(WelcomePage.this));
             Ispassword.setText(SharedPreferenceManager.getUserPassword(WelcomePage.this));
@@ -170,6 +170,7 @@ public class WelcomePage extends AppCompatActivity {
             public void onClick(View view)
             {
                 startActivity(new Intent(WelcomePage.this, ForgetPassword.class));
+                dialog.show();
                 dialog2.dismiss();
 
             }
@@ -331,7 +332,6 @@ public class WelcomePage extends AppCompatActivity {
                         finish();
                         dialog.dismiss();
 
-                        String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
                         SharedPreferences sharedPreferences = getSharedPreferences(Constants.PREFS_FILE_NAME, MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -405,9 +405,6 @@ public class WelcomePage extends AppCompatActivity {
                     editor.putString(Constants.PREFS_USER_TOTAL_PICTURES, pictures);
                     editor.putString(Constants.PREFS_USER_GOAL_CHECK,goalcheck);
                     editor.putString(Constants.PREFS_USER_LAST_ACCESSED,lastuseddate);
-                    SharedPreferenceManager.setUserLevel(WelcomePage.this,level);
-                    editor.apply();
-
                     if (rememberCheck.isChecked())
                     {
                         editor.putString(Constants.PREFS_SIGN_IN_REMEMBER,"yes");
@@ -418,6 +415,10 @@ public class WelcomePage extends AppCompatActivity {
                         editor.putString(Constants.PREFS_SIGN_IN_REMEMBER,"no");
                         editor.putString(Constants.PREFS_USER_PASSWORD,"");
                     }
+                    SharedPreferenceManager.setUserLevel(WelcomePage.this,level);
+                    editor.apply();
+
+
 
                 }
             }
@@ -433,5 +434,14 @@ public class WelcomePage extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (dialog!= null && dialog.isShowing())
+        {
+            dialog.dismiss();
+        }
     }
 }

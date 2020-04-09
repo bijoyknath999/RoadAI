@@ -35,13 +35,13 @@ public class SlideAdapter extends PagerAdapter {
     public String [] slide_titles = {
 
             "Earn coins for\ntravelling",
-            "Help Others\nHelp Youself",
+            "Help Others\nHelp Yourself",
             "Map Based"
     };
 
     public String [] slide_desc = {
 
-            "Travel more with Road Ai,\near coins in your wallet",
+            "Travel more with Road Ai,\nearn coins in your wallet",
             "Record while driving, spot potholes, share on social media",
             "Detect road condition using\nany smart phone"
     };

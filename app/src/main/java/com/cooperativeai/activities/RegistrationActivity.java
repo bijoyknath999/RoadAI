@@ -24,8 +24,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -70,9 +74,12 @@ public class RegistrationActivity extends AppCompatActivity {
                 startActivity(new Intent(RegistrationActivity.this, WelcomePage.class));
                 overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
                 finish();
+                dialog.show();
 
             }
         });
+
+
 
         SignUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,11 +94,11 @@ public class RegistrationActivity extends AppCompatActivity {
                 if (UtilityMethods.isInternetAvailable()) {
                     if (!email.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches() && !password.isEmpty() &&!confirmpass.isEmpty() && !fullname.isEmpty() && !username.isEmpty() && password.equals(confirmpass)) {
                         dialog.show();
-                        startRegistration();
+                        CheckUsername();
                     } else {
                         if (email.isEmpty())
                             IsEmail.setError("Email is required");
-                        if (!email.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches())
+                        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches())
                             IsEmail.setError("Invalid email format");
                         if (password.isEmpty())
                             IsPass.setError("Password is required");
@@ -123,6 +130,54 @@ public class RegistrationActivity extends AppCompatActivity {
         });
     }
 
+    private void CheckUsername()
+    {
+        Query query = UsersDatabaseRef.orderByChild("Username").equalTo(username);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists())
+                {
+                    IsUsername.setError("Username already exists");
+                    dialog.dismiss();
+                }
+                else
+                {
+                    CheckEmail();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void CheckEmail()
+    {
+        Query query = UsersDatabaseRef.orderByChild("Email").equalTo(email);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists())
+                {
+                    IsEmail.setError("Username already exists");
+                    dialog.dismiss();
+                }
+                else
+                {
+                    startRegistration();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     private void startRegistration() {
 
         firebaseAuth.createUserWithEmailAndPassword(email,password)
@@ -137,6 +192,13 @@ public class RegistrationActivity extends AppCompatActivity {
                             {
                                 SaveUserDataDatabase();
                             }
+                        }
+
+                        else
+                        {
+                            String message = task.getException().getMessage();
+                            Toast.makeText(RegistrationActivity.this, "Error Occured:" + message, Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
                         }
                     }
                 });
@@ -226,5 +288,15 @@ public class RegistrationActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);    }
+        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (dialog!= null && dialog.isShowing())
+        {
+            dialog.dismiss();
+        }
+    }
 }
