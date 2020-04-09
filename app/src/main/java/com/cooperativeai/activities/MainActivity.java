@@ -248,7 +248,7 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.setType("text/plain");
                 shareIntent.putExtra(Intent.EXTRA_SUBJECT,"Invitation From Road.Ai App");
-                shareIntent.putExtra(Intent.EXTRA_TEXT ,"Description" +
+                shareIntent.putExtra(Intent.EXTRA_TEXT ,"Road.Ai is world's first real-time road condition \nmonitoring app based on artificial inteligence. \nSo let's get started, if you are a new user signup, it's free!" +
                         "\nInvitation From Road.Ai App \nDownload Link : https://play.google.com/store/apps/details?id="+getPackageName());
                 startActivity(shareIntent,null);
                 break;
