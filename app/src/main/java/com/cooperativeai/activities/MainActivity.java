@@ -5,6 +5,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -15,6 +16,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -23,6 +25,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -67,14 +70,12 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private Fragment selectedFragment = null;
     private DatabaseReference UserAcc;
-    private double latitude,longitude,lon,lat;
+    private double latitude = 0.0,longitude = 0.0,lon = 0.0,lat = 0.0;
     private boolean hasLocationPermission;
     private static final int LOCATION_REQUEST_CODE = 31;
     private String city,country;
     private LocationManager locationManager;
     private Dialog noconnectionDialog;
-    private Dialog dialog;
-
 
 
 
@@ -88,6 +89,118 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
         spaceNavigationView.addSpaceItem(new SpaceItem("Home", R.drawable.ic_home));
         spaceNavigationView.addSpaceItem(new SpaceItem("Profile", R.drawable.ic_profile));
 
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
+        toolbar = findViewById(R.id.main_toolbar);
+
+        noconnectionDialog = UtilityMethods.showDialogAlert(MainActivity.this, R.layout.dialog_box);
+
+
+
+        UserAcc = FirebaseDatabase.getInstance().getReference().child("Users");
+
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("Home");
+        toolbar.setTitleTextColor(ContextCompat.getColor(this,R.color.color1));
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,R.string.drawer_open,R.string.drawer_close);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
+        actionBarDrawerToggle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.color1));
+        actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.home_container,
+                new HomeFragment()).commit();
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem)
+
+            {
+                UserMenuSelector (menuItem);
+                return false;
+            }
+        });
+
+
+        getPermission(Constants.LOCATION_PERMISSION);
+
+        if (hasLocationPermission) {
+
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            @SuppressLint("MissingPermission") Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) && location != null) {
+                onLocationChanged(location);
+                getlocation(location);
+
+                FusedLocationProviderClient client = new FusedLocationProviderClient(MainActivity.this);
+                client.getLastLocation()
+                        .addOnSuccessListener(new OnSuccessListener<Location>() {
+                            @Override
+                            public void onSuccess(Location location) {
+                                latitude = location.getLatitude();
+                                longitude = location.getLongitude();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(MainActivity.this, "Location Fetching failed", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+            else
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Turn on GPS\nSelect High Accuracy");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        finishAffinity();
+                        dialogInterface.dismiss();
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i)
+                    {
+                        finishAffinity();
+                    }
+                });
+                builder.show();
+            }
+
+        }
+        else
+        {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(MainActivity.this, "Permissions were not granted", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+
+        OpenWeatherMapHelper helper = new OpenWeatherMapHelper(getString(R.string.openweatherapi));
+        helper.setUnits(Units.METRIC);
+        helper.setLang(Lang.ENGLISH);
+        helper.getCurrentWeatherByGeoCoordinates(latitude,longitude, new CurrentWeatherCallback() {
+            @Override
+            public void onSuccess(CurrentWeather currentWeather) {
+
+                SharedPreferenceManager.setUserLocationTemp(MainActivity.this,""+currentWeather.getMain().getTempMax()+"° Celsius");
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+
+            }
+        });
+
 
         spaceNavigationView.setSpaceOnClickListener(new SpaceOnClickListener() {
             @Override
@@ -98,7 +211,6 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
                 CamIntent.putExtra("lon",longitude);
                 startActivity(CamIntent);
                 overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
-                dialog.show();
 
             }
 
@@ -129,34 +241,12 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
             }
         });
 
-        drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
-        toolbar = findViewById(R.id.main_toolbar);
-
-        noconnectionDialog = UtilityMethods.showDialogAlert(MainActivity.this, R.layout.dialog_box);
-        dialog = UtilityMethods.showDialog(MainActivity.this, R.layout.layout_loading_dialog);
-
-
-
-
-        UserAcc = FirebaseDatabase.getInstance().getReference().child("Users");
-
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle("Home");
-        if (savedInstanceState == null)
+        if (selectedFragment == new HomeFragment())
         {
-            getSupportFragmentManager().beginTransaction().replace(R.id.home_container,
-                    new HomeFragment()).commit();
-        }
-        toolbar.setTitleTextColor(ContextCompat.getColor(this,R.color.color1));
-        actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,R.string.drawer_open,R.string.drawer_close);
-        drawerLayout.addDrawerListener(actionBarDrawerToggle);
-        actionBarDrawerToggle.syncState();
-        actionBarDrawerToggle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.color1));
-        actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
 
+        }
+
+        //Navugation Menu
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -165,61 +255,6 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
             {
                 UserMenuSelector (menuItem);
                 return false;
-            }
-        });
-
-
-        getPermission(Constants.LOCATION_PERMISSION);
-
-        if (hasLocationPermission) {
-
-            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            @SuppressLint("MissingPermission") Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            onLocationChanged(location);
-            getlocation(location);
-
-            FusedLocationProviderClient client = new FusedLocationProviderClient(MainActivity.this);
-            client.getLastLocation()
-                    .addOnSuccessListener(new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            latitude = location.getLatitude();
-                            longitude = location.getLongitude();
-                            getlocation(location);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(MainActivity.this, "Location Fetching failed", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
-        }
-        else
-        {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(MainActivity.this, "Permissions were not granted", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-
-
-        OpenWeatherMapHelper helper = new OpenWeatherMapHelper(getString(R.string.openweatherapi));
-        helper.setUnits(Units.METRIC);
-        helper.setLang(Lang.ENGLISH);
-        helper.getCurrentWeatherByGeoCoordinates(latitude,longitude, new CurrentWeatherCallback() {
-            @Override
-            public void onSuccess(CurrentWeather currentWeather) {
-
-                SharedPreferenceManager.setUserLocationTemp(MainActivity.this,""+currentWeather.getMain().getTempMax()+"° Celsius");
-            }
-
-            @Override
-            public void onFailure(Throwable throwable) {
-
             }
         });
 
@@ -248,7 +283,7 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.setType("text/plain");
                 shareIntent.putExtra(Intent.EXTRA_SUBJECT,"Invitation From Road.Ai App");
-                shareIntent.putExtra(Intent.EXTRA_TEXT ,"Road.Ai is world's first real-time road condition \nmonitoring app based on artificial inteligence. \nSo let's get started, if you are a new user signup, it's free!" +
+                shareIntent.putExtra(Intent.EXTRA_TEXT ,"Description" +
                         "\nInvitation From Road.Ai App \nDownload Link : https://play.google.com/store/apps/details?id="+getPackageName());
                 startActivity(shareIntent,null);
                 break;
@@ -272,55 +307,14 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
     {
         switch (menuItem.getItemId())
         {
-            case R.id.menu_about_us:
-                break;
-            case R.id.menu_follow_us:
-                break;
             case R.id.menu_logout:
                 FirebaseAuth.getInstance().signOut();
-                setData();
-                dialog.show();
+                startActivity(new Intent(MainActivity.this,WelcomePage.class));
+                overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
                 finish();
                 break;
         }
 
-    }
-
-    private void setData()
-    {
-        String checkRem = SharedPreferenceManager.getSignRemember(MainActivity.this);
-        if (checkRem.equals("yes"))
-        {
-            SharedPreferences sharedPreferences = getSharedPreferences(Constants.PREFS_FILE_NAME, MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.remove(Constants.PREFS_USER_NAME);
-            editor.remove(Constants.PREFS_USER_USERNAME);
-            editor.remove(Constants.PREFS_USER_ID);
-            editor.remove(Constants.PREFS_USER_COIN_COUNT);
-            editor.remove(Constants.PREFS_USER_WALLET);
-            editor.remove(Constants.PREFS_USER_TOTAL_PICTURES);
-            editor.remove(Constants.PREFS_USER_GOAL_CHECK);
-            editor.remove(Constants.PREFS_USER_LAST_ACCESSED);
-            editor.commit();
-        }
-        else
-        {
-            SharedPreferences sharedPreferences = getSharedPreferences(Constants.PREFS_FILE_NAME, MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.remove(Constants.PREFS_USER_EMAIL);
-            editor.remove(Constants.PREFS_USER_PASSWORD);
-            editor.remove(Constants.PREFS_USER_NAME);
-            editor.remove(Constants.PREFS_USER_USERNAME);
-            editor.remove(Constants.PREFS_USER_ID);
-            editor.remove(Constants.PREFS_USER_COIN_COUNT);
-            editor.remove(Constants.PREFS_USER_WALLET);
-            editor.remove(Constants.PREFS_USER_TOTAL_PICTURES);
-            editor.remove(Constants.PREFS_USER_GOAL_CHECK);
-            editor.remove(Constants.PREFS_USER_LAST_ACCESSED);
-            editor.commit();
-        }
-        startActivity(new Intent(MainActivity.this,WelcomePage.class));
-        overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
     }
 
 
@@ -352,7 +346,6 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
 
     @Override
     public void onLocationChanged(Location location) {
-
         lon = location.getLongitude();
         lat = location.getLatitude();
 
@@ -412,16 +405,7 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
 
     @Override
     public void onBackPressed() {
-        moveTaskToBack(true);
+        super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (dialog!= null && dialog.isShowing())
-        {
-            dialog.dismiss();
-        }
     }
 }
