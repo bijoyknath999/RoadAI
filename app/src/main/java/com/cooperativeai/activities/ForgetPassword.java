@@ -57,7 +57,7 @@ public class ForgetPassword extends AppCompatActivity {
                     } else {
                         if (Email.isEmpty())
                             IsEmail.setError("Email is required");
-                        if (!Email.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(Email).matches())
+                        if (!Patterns.EMAIL_ADDRESS.matcher(Email).matches())
                             IsEmail.setError("Invalid email format");
 
                         dialog.dismiss();

@@ -84,21 +84,13 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SpaceNavigationView spaceNavigationView = (SpaceNavigationView) findViewById(R.id.bottom_nav);
-        spaceNavigationView.initWithSaveInstanceState(savedInstanceState);
-        spaceNavigationView.addSpaceItem(new SpaceItem("Home", R.drawable.ic_home));
-        spaceNavigationView.addSpaceItem(new SpaceItem("Profile", R.drawable.ic_profile));
+        //Firebase Database Reference
+        UserAcc = FirebaseDatabase.getInstance().getReference().child("Users");
+        noconnectionDialog = UtilityMethods.showDialogAlert(MainActivity.this, R.layout.dialog_box);
 
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.main_toolbar);
-
-        noconnectionDialog = UtilityMethods.showDialogAlert(MainActivity.this, R.layout.dialog_box);
-
-
-
-        UserAcc = FirebaseDatabase.getInstance().getReference().child("Users");
-
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -110,11 +102,15 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
         actionBarDrawerToggle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.color1));
         actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
 
+        //For Bottom Navigation
+        SpaceNavigationView spaceNavigationView = (SpaceNavigationView) findViewById(R.id.bottom_nav);
+        spaceNavigationView.initWithSaveInstanceState(savedInstanceState);
+        spaceNavigationView.addSpaceItem(new SpaceItem("Home", R.drawable.ic_home));
+        spaceNavigationView.addSpaceItem(new SpaceItem("Profile", R.drawable.ic_profile));
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.home_container,
-                new HomeFragment()).commit();
-
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        //For Drawer Navigation
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener()
+        {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem)
 
@@ -124,24 +120,25 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
             }
         });
 
-
+        //Get Location Permission if not
         getPermission(Constants.LOCATION_PERMISSION);
 
         if (hasLocationPermission) {
 
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             @SuppressLint("MissingPermission") Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) && location != null) {
+            //if gps is on the it will work and get current location either alert box will show up
+            if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 onLocationChanged(location);
-                getlocation(location);
-
                 FusedLocationProviderClient client = new FusedLocationProviderClient(MainActivity.this);
                 client.getLastLocation()
                         .addOnSuccessListener(new OnSuccessListener<Location>() {
                             @Override
                             public void onSuccess(Location location) {
-                                latitude = location.getLatitude();
-                                longitude = location.getLongitude();
+                                if (location!=null) {
+                                    latitude = location.getLatitude();
+                                    longitude = location.getLongitude();
+                                }
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
@@ -184,6 +181,7 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
             });
         }
 
+        //Using Open Weather it's getting current location temperature
 
         OpenWeatherMapHelper helper = new OpenWeatherMapHelper(getString(R.string.openweatherapi));
         helper.setUnits(Units.METRIC);
@@ -201,7 +199,7 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
             }
         });
 
-
+        //Set Click Listener for bottom Navigation
         spaceNavigationView.setSpaceOnClickListener(new SpaceOnClickListener() {
             @Override
             public void onCentreButtonClick() {
@@ -241,40 +239,23 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
             }
         });
 
-        if (selectedFragment == new HomeFragment())
-        {
-
-        }
-
-        //Navugation Menu
-
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem)
-
-            {
-                UserMenuSelector (menuItem);
-                return false;
-            }
-        });
-
+        //Set Default Fragment Activity
+        getSupportFragmentManager().beginTransaction().replace(R.id.home_container,
+                new HomeFragment()).commit();
     }
 
-
+    //it's getting toolbar menu item
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
 
         return super.onCreateOptionsMenu(menu);
 
     }
-
-
-    //Toolbar and Drawer
-
+    //It's work when click on toolbar menu item
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
-
     {
 
         switch (item.getItemId())
@@ -283,7 +264,7 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.setType("text/plain");
                 shareIntent.putExtra(Intent.EXTRA_SUBJECT,"Invitation From Road.Ai App");
-                shareIntent.putExtra(Intent.EXTRA_TEXT ,"Description" +
+                shareIntent.putExtra(Intent.EXTRA_TEXT ,"Road.Ai is world's first real-time road condition \nmonitoring app based on artificial inteligence. \nSo let's get started, if you are a new user signup, it's free!" +
                         "\nInvitation From Road.Ai App \nDownload Link : https://play.google.com/store/apps/details?id="+getPackageName());
                 startActivity(shareIntent,null);
                 break;
@@ -293,15 +274,11 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
         if (actionBarDrawerToggle.onOptionsItemSelected(item))
 
         {
-
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
-
-    //Navigation
-
+    //when select drawer menu item then it will work
     private void UserMenuSelector(MenuItem menuItem)
 
     {
@@ -316,8 +293,7 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
         }
 
     }
-
-
+    //Get Location Permission
     private void getPermission(String writePermission) {
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
@@ -325,7 +301,6 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
         else
             hasLocationPermission = true;
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -346,8 +321,25 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
 
     @Override
     public void onLocationChanged(Location location) {
-        lon = location.getLongitude();
-        lat = location.getLatitude();
+        if (location!=null) {
+            lon = location.getLongitude();
+            lat = location.getLatitude();
+
+            try {
+                Geocoder geocoder = new Geocoder(MainActivity.this);
+                List<Address> addresses = null;
+                addresses = geocoder.getFromLocation(lat,lon,1);
+
+                city = addresses.get(0).getLocality();
+                country = addresses.get(0).getCountryName();
+                SharedPreferenceManager.setUserLocation(MainActivity.this,city+", "+country);
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(MainActivity.this,"Error : "+e,Toast.LENGTH_SHORT).show();
+            }
+        }
 
     }
 
@@ -366,25 +358,7 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
 
     }
 
-    private void getlocation(Location location)
-    {
-
-        try {
-            Geocoder geocoder = new Geocoder(MainActivity.this);
-            List<Address> addresses = null;
-            addresses = geocoder.getFromLocation(lat,lon,1);
-
-            city = addresses.get(0).getLocality();
-            country = addresses.get(0).getCountryName();
-            SharedPreferenceManager.setUserLocation(MainActivity.this,city+", "+country);
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(MainActivity.this,"Error : "+e,Toast.LENGTH_SHORT).show();
-        }
-    }
-
+    //Checking net connection when app will open
     @Override
     protected void onStart() {
         super.onStart();
