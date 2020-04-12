@@ -1,79 +1,39 @@
 package com.cooperativeai.activities;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-
 import com.cooperativeai.R;
-import com.cooperativeai.statemanagement.MainStore;
 import com.cooperativeai.utils.Constants;
 import com.cooperativeai.utils.DateTimeManager;
 import com.cooperativeai.utils.SharedPreferenceManager;
 import com.cooperativeai.utils.UtilityMethods;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.kwabenaberko.openweathermaplib.constants.Lang;
-import com.kwabenaberko.openweathermaplib.constants.Units;
-import com.kwabenaberko.openweathermaplib.implementation.OpenWeatherMapHelper;
-import com.kwabenaberko.openweathermaplib.implementation.callbacks.CurrentWeatherCallback;
-import com.kwabenaberko.openweathermaplib.models.currentweather.CurrentWeather;
-
-import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-
 
 public class HomeFragment extends Fragment {
 
     private TextView TextTemp, TextUsername, TextLevel, TextCoins, TextCurrentTime, TextCurrentLocation;
-    private LocationManager locationManager;
     private Date lastUsedDate;
     private String lastUsedDateAsString;
     private Date currentDate;
-    private int userCurrentLevel,level;
+    private int userCurrentLevel;
     private FirebaseAuth firebaseAuth;
     private DatabaseReference UsersDatabaseRef;
-    private String currentDateAsString,city,country,UserCurrentGoalCheck,CurrentCoins,CurrentWallet,Username;
-    double wallet;
+    private String currentDateAsString,UserCurrentGoalCheck,CurrentCoins,CurrentWallet,Username;
+    private double wallet;
     private Dialog noconnectionDialog;
-
-
-
-
 
     @Nullable
     @Override
@@ -92,9 +52,10 @@ public class HomeFragment extends Fragment {
 
         noconnectionDialog = UtilityMethods.showDialogAlert(getContext(), R.layout.dialog_box);
 
-
-
+        //Set Toolbar Title
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("Home");
+
+        //get values from sharedpreference
         lastUsedDateAsString = SharedPreferenceManager.getLastUsedDate(getActivity());
         userCurrentLevel = SharedPreferenceManager.getUserLevel(getActivity());
         CurrentCoins = SharedPreferenceManager.getUserCoins(getActivity());
@@ -134,6 +95,7 @@ public class HomeFragment extends Fragment {
                 }
             },2500);        }
 
+        //set all values in textview which is from SharedPreference
         TextUsername.setText("Welcome, " + SharedPreferenceManager.getUserUsername(getContext()));
         TextCurrentTime.setText(""+DateTimeManager.getMonthNameWithDate());
         TextCoins.setText("" + SharedPreferenceManager.getUserCoins(getActivity()));
@@ -145,6 +107,9 @@ public class HomeFragment extends Fragment {
     }
 
 
+    //if last used date not equal to current date and current coins not equal to zero,
+    // then it will convert coins to wallet and set coins value zero
+    //also set last used date and level
     private void ConvertCoinToWalletSaveLastUsedDateSaveLevel()
     {
 
@@ -167,12 +132,14 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    //if user would not use app for 2 days it will make goal value empty
     private void DecreaeseGoal()
     {
         if (UserCurrentGoalCheck.isEmpty() || UserCurrentGoalCheck.equals("1"))
         SharedPreferenceManager.setUserGoalCheck(getActivity(),"");
     }
 
+    //if user using app everyday it will increase goal value 1+
     private void IcreaseGoalAndSaveData()
     {
 
@@ -190,14 +157,14 @@ public class HomeFragment extends Fragment {
 
     }
 
+    //if user not using app for 2< then it will reduce level 1-
     private int reduceLevelCount(){
         if (userCurrentLevel == 1){
             ConvertCoinToWalletSaveLastUsedDateSaveLevel();
             return userCurrentLevel;
         }
         else{
-            long reduceCount = DateTimeManager.diffInDate(currentDate, lastUsedDate);
-            userCurrentLevel -= reduceCount;
+            userCurrentLevel -= 1;
 
             if (userCurrentLevel <= 1)
                 userCurrentLevel = 1;
@@ -207,6 +174,7 @@ public class HomeFragment extends Fragment {
 
     }
 
+    //get values from SharedPreference and update all values in firebase database
     private void SaveInDatabase()
     {
         HashMap Usermap = new HashMap();

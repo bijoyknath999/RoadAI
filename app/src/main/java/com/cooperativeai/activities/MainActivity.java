@@ -123,7 +123,8 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
         //Get Location Permission if not
         getPermission(Constants.LOCATION_PERMISSION);
 
-        if (hasLocationPermission) {
+        if (hasLocationPermission)
+        {
 
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             @SuppressLint("MissingPermission") Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);

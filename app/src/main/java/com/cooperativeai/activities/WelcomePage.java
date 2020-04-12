@@ -77,12 +77,14 @@ public class WelcomePage extends AppCompatActivity {
 
 
 
+        //Google Sign In
         GoogleSignInOptions gso = new  GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
         googleSignInClient = GoogleSignIn.getClient(this,gso);
 
+        //SignUp Button Click Listener
         SignupBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -90,6 +92,7 @@ public class WelcomePage extends AppCompatActivity {
             }
         });
 
+        //Login Button Click Listener
         LoginBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -99,6 +102,7 @@ public class WelcomePage extends AppCompatActivity {
         });
     }
 
+    //Show Sign In Dialog
     private void ShowDialog()
     {
         AlertDialog.Builder alertdialog;
@@ -130,6 +134,7 @@ public class WelcomePage extends AppCompatActivity {
 
         String checkRem = SharedPreferenceManager.getSignRemember(WelcomePage.this);
 
+        //Check User if
         if (checkRem.equals("yes"))
         {
             Isemail.setText(SharedPreferenceManager.getUserEmail(WelcomePage.this));
@@ -137,6 +142,7 @@ public class WelcomePage extends AppCompatActivity {
             rememberCheck.isChecked();
         }
 
+        //Sign In With Google when click on button
         loginwithGoogleBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view)
@@ -164,7 +170,7 @@ public class WelcomePage extends AppCompatActivity {
             }
         });
 
-
+        //Forget Password Click Listener
         forgetPass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view)
@@ -176,6 +182,7 @@ public class WelcomePage extends AppCompatActivity {
             }
         });
 
+        //Login Button Click Listener
         loginBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -212,10 +219,9 @@ public class WelcomePage extends AppCompatActivity {
             }
         });
 
-
-
     }
 
+    //For Sign in with google
     private void LoginWithGoogle()
     {
         Intent signIntent = googleSignInClient.getSignInIntent();
@@ -284,6 +290,7 @@ public class WelcomePage extends AppCompatActivity {
         });
     }
 
+    //sign in with email password using firebase auth
     private void StarLogin()
     {
         dialog = UtilityMethods.showDialog(WelcomePage.this, R.layout.layout_loading_dialog);
@@ -311,8 +318,8 @@ public class WelcomePage extends AppCompatActivity {
                 });
     }
 
+    //Check email verified or not
     private void VerifyEmail()
-
     {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         emailchecker = user.isEmailVerified();
@@ -376,6 +383,7 @@ public class WelcomePage extends AppCompatActivity {
         }
     }
 
+    //get user data from firebase database and save in phone
     private void SavaData()
     {
         String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();

@@ -52,6 +52,9 @@ public class RegistrationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 
+        firebaseAuth = FirebaseAuth.getInstance();
+        UsersDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
+
         IsEmail = findViewById(R.id.edittextemail);
         IsFullname = findViewById(R.id.edittextfullname);
         IsUsername = findViewById(R.id.edittextusername);
@@ -61,12 +64,10 @@ public class RegistrationActivity extends AppCompatActivity {
         SignInBtn = findViewById(R.id.already_signinbtn);
 
         noconnectionDialog = UtilityMethods.showDialogAlert(RegistrationActivity.this, R.layout.dialog_box);
-
-
-        firebaseAuth = FirebaseAuth.getInstance();
         dialog = UtilityMethods.showDialog(RegistrationActivity.this, R.layout.layout_loading_dialog);
-        UsersDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
+        //sign in button click listener
+        // Send User to sign in welcomepage
         SignInBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -79,8 +80,7 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
 
-
-
+        //sign up button click listener
         SignUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view)
@@ -129,7 +129,7 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
     }
-
+    //Check Username either it is exists in firebase database or not
     private void CheckUsername()
     {
         Query query = UsersDatabaseRef.orderByChild("Username").equalTo(username);
@@ -154,6 +154,7 @@ public class RegistrationActivity extends AppCompatActivity {
         });
     }
 
+    //Check Email either it is exists in firebase database or not
     private void CheckEmail()
     {
         Query query = UsersDatabaseRef.orderByChild("Email").equalTo(email);
@@ -178,6 +179,7 @@ public class RegistrationActivity extends AppCompatActivity {
         });
     }
 
+    //Sign up with email password using firebase auth
     private void startRegistration() {
 
         firebaseAuth.createUserWithEmailAndPassword(email,password)
@@ -204,6 +206,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 });
     }
 
+    //Save user data in firebase and phone also
     private void SaveUserDataDatabase() {
 
         HashMap UserMap = new HashMap();
@@ -255,6 +258,7 @@ public class RegistrationActivity extends AppCompatActivity {
         });
     }
 
+    //Send Email Verification Link
     private void SendEmailVerification() {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -284,13 +288,11 @@ public class RegistrationActivity extends AppCompatActivity {
 
 
     }
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
     }
-
     @Override
     public void onStop() {
         super.onStop();

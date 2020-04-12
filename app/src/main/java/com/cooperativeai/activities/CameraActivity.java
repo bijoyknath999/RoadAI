@@ -46,6 +46,7 @@ import com.cooperativeai.R;
 import com.cooperativeai.communication.SocketConnection;
 import com.cooperativeai.statemanagement.MainStore;
 import com.cooperativeai.utils.Constants;
+import com.cooperativeai.utils.DatabasePreferenceManager;
 import com.cooperativeai.utils.SharedPreferenceManager;
 import com.cooperativeai.utils.UtilityMethods;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -128,8 +129,7 @@ public class CameraActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         noconnectionDialog = UtilityMethods.showDialogAlert(CameraActivity.this, R.layout.dialog_box);
 
-
-
+        //
         lattitude = getIntent().getDoubleExtra("lat",0.0);
         longitude = getIntent().getDoubleExtra("lon",0.0);
         mainstore=new MainStore(lattitude,longitude);
@@ -142,7 +142,6 @@ public class CameraActivity extends AppCompatActivity {
 
         cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
         cameraFacing = CameraCharacteristics.LENS_FACING_BACK;
-
         AutoCapture = findViewById(R.id.camera_auto_capture);
         surfaceTextureListener = new TextureView.SurfaceTextureListener() {
             @Override
@@ -167,6 +166,7 @@ public class CameraActivity extends AppCompatActivity {
             }
         };
 
+        //
         AutoCapture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view)
@@ -619,8 +619,8 @@ public class CameraActivity extends AppCompatActivity {
 
     private void UpdateGoalUpdateLevel(String currentCoinCount, String currentgoal, int currentLevel)
     {
-
-        if (currentLevel == 5){
+        if (currentLevel == 5)
+        {
             currentLevel = 5;
             SharedPreferenceManager.setUserGoalCheck(CameraActivity.this,"");
             SharedPreferenceManager.setUserLevel(CameraActivity.this, currentLevel);
@@ -628,12 +628,10 @@ public class CameraActivity extends AppCompatActivity {
         }
         else{
             currentLevel += 1;
-
             if (currentLevel >= 5)
                 currentLevel = 5;
             SharedPreferenceManager.setUserGoalCheck(CameraActivity.this,"");
             SharedPreferenceManager.setUserLevel(CameraActivity.this, currentLevel);
-
             SaveDataDatabase();
         }
 
@@ -641,7 +639,7 @@ public class CameraActivity extends AppCompatActivity {
 
     private void SaveDataDatabase()
     {
-        SharedPreferenceManager.setDataDatabase4value(CameraActivity.this,"Level",
+        DatabasePreferenceManager.setDataDatabase4value(CameraActivity.this,"Level",
                 "Coins","Goalcheck","Pictures",
                 SharedPreferenceManager.getUserLevel(CameraActivity.this),SharedPreferenceManager.getUserCoins(CameraActivity.this),
                 SharedPreferenceManager.getUserGoalCheck(CameraActivity.this),SharedPreferenceManager.getUserTotalPicturesCapture(CameraActivity.this));

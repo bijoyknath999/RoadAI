@@ -46,6 +46,7 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
 
+        //set activity full screen
         if (Build.VERSION.SDK_INT>15)
         {
             View decorView = getWindow().getDecorView();
@@ -60,9 +61,6 @@ public class SplashActivity extends AppCompatActivity {
         crpv = (ColorfulRingProgressView) findViewById(R.id.crpv);
         crpv.animateIndeterminate();
 
-
-
-
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -70,16 +68,17 @@ public class SplashActivity extends AppCompatActivity {
 
                 SharedPreferences sharedPreferences = getSharedPreferences("sharedPreferences", MODE_PRIVATE);
                 final boolean firstTime = sharedPreferences.getBoolean("firstTime", true);
-                if (firstTime) {
+                if (firstTime)
+                {
                     Intent IntroIntent = new Intent(SplashActivity.this, Intro.class);
                     IntroIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(IntroIntent);
                     finish();
                     overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
                 }
-                else{
+                else
+                    {
                     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-
                     if (currentUser == null)
                     {
                         SendUserSignInActivity();
@@ -109,6 +108,7 @@ public class SplashActivity extends AppCompatActivity {
         }, 2000);
     }
 
+    //Check User data already exists in firebase database or not
     private void CheckUserExistence()
     {
         final String current_user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -134,6 +134,7 @@ public class SplashActivity extends AppCompatActivity {
         });
     }
 
+    //Send user to welcomepage
     private void SendUserSignInActivity()
     {
         Intent SignAct = new Intent(SplashActivity.this, WelcomePage.class);
@@ -143,6 +144,7 @@ public class SplashActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
     }
 
+    //Send user to MainActivity and get values from firebase database ,update all SharedPreferences value
     private void SendUserMainActivity()
     {
         String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -191,6 +193,7 @@ public class SplashActivity extends AppCompatActivity {
 
     }
 
+    //Send user to account setup activity
     private void SendUserSetupAccount()
     {
         Intent SetupIntent = new Intent(SplashActivity.this, SetupAccount.class);

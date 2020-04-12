@@ -47,20 +47,23 @@ public class SetupAccount extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup_account);
 
+        firebaseAuth = FirebaseAuth.getInstance();
+        UsersDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
+
         Isemail = findViewById(R.id.setupemail);
         Isfullname = findViewById(R.id.setupfullname);
         IsUsername = findViewById(R.id.setupusername);
         SaveBTN = findViewById(R.id.savebtn);
         LogoutBTN = findViewById(R.id.signoutbtn);
+
         noconnectionDialog = UtilityMethods.showDialogAlert(SetupAccount.this, R.layout.dialog_box);
-
-
-        firebaseAuth = FirebaseAuth.getInstance();
         dialog = UtilityMethods.showDialog(SetupAccount.this, R.layout.layout_loading_dialog);
-        UsersDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
+
+        //get user email and set in textview
         getemail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
         Isemail.setText(getemail);
 
+        //Logout Button Click listener
         LogoutBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -86,6 +89,7 @@ public class SetupAccount extends AppCompatActivity {
             }
         });
 
+        //Save button click listener
         SaveBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -124,9 +128,9 @@ public class SetupAccount extends AppCompatActivity {
             }
         });
 
-
     }
 
+    //Check Username either it is exists in firebase database
     private void CheckUsername()
     {
         Query query = UsersDatabaseRef.orderByChild("Username").equalTo(username);
@@ -151,7 +155,7 @@ public class SetupAccount extends AppCompatActivity {
         });
     }
 
-
+    //Save user data in firebase and phone also
     private void SaveUserInfo()
     {
 
