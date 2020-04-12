@@ -29,8 +29,10 @@ public class SocketConnection extends Application {
 
     private Socket mSocket;
     private MainStore mainStore;
+    private String token;
     private Gson gson = new Gson();
     private boolean isReady = false;
+    private boolean auth = false;
 
     {
         try{
@@ -40,8 +42,9 @@ public class SocketConnection extends Application {
         }
     }
 
-    public SocketConnection(MainStore mainStore){
+    public SocketConnection(MainStore mainStore, String token){
         this.mainStore = mainStore;
+        this.token = token;
         mSocket.connect();
         initListeners();
     }
@@ -52,8 +55,12 @@ public class SocketConnection extends Application {
 
     public boolean getStatus(){return isReady;}
 
+    public boolean getAuthStatus(){ return auth; }
+
     public void initListeners(){
         mSocket.on("connected",onConnected);
+        mSocket.on("AUTH_SUCCESS",onAuthSuccess);
+        mSocket.on("AUTH_FAILED",onAuthFailed);
         mSocket.on("ADD_DISTRESS",onADD_DISTRESS);
         mSocket.on(Socket.EVENT_CONNECT, onConnect);
         mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
@@ -64,6 +71,8 @@ public class SocketConnection extends Application {
 
     public void desposeListeners(){
         mSocket.off(Socket.EVENT_CONNECT, onConnect);
+        mSocket.off("AUTH_SUCCESS",onAuthSuccess);
+        mSocket.off("AUTH_FAILED",onAuthFailed);
         mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
         mSocket.off("connected",onConnected);
         mSocket.off("ADD_DISTRESS",onADD_DISTRESS);
@@ -77,8 +86,28 @@ public class SocketConnection extends Application {
     private Emitter.Listener onConnected = args -> new Thread(() -> {
         System.out.println("Connected to new Server");
 //        System.out.println("Distress:" + gson.toJson(mainStore.getState().gps()));
-        mSocket.emit("init",gson.toJson(mainStore.getState().gps()));
+        mSocket.emit("AUTHENTICATE", token);
     }).start();
+
+    private Emitter.Listener onAuthSuccess = (args) -> {
+        new Thread(() -> {
+            this.auth = true;
+            System.out.println("Authentication Successful");
+            mSocket.emit("init",gson.toJson(mainStore.getState().gps()));
+        }).start();
+    };
+
+    private Emitter.Listener onAuthFailed = (args) -> {
+        new Thread(() -> {
+            System.out.println("Authentication Failed");
+            try {
+                Thread.sleep(2000);
+            }catch (Exception e){
+                System.out.println(e);
+            }
+            mSocket.connect();
+        }).start();
+    };
 
     private Emitter.Listener onADD_DISTRESS = args -> new Thread(() -> {
         Distress distress = gson.fromJson((String) args[0],Distress.class);

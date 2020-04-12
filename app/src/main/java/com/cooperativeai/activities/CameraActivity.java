@@ -46,13 +46,16 @@ import com.cooperativeai.R;
 import com.cooperativeai.communication.SocketConnection;
 import com.cooperativeai.statemanagement.MainStore;
 import com.cooperativeai.utils.Constants;
-import com.cooperativeai.utils.DatabasePreferenceManager;
 import com.cooperativeai.utils.SharedPreferenceManager;
 import com.cooperativeai.utils.UtilityMethods;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -129,10 +132,20 @@ public class CameraActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         noconnectionDialog = UtilityMethods.showDialogAlert(CameraActivity.this, R.layout.dialog_box);
 
-        //
-        lattitude = getIntent().getDoubleExtra("lat",0.0);
-        longitude = getIntent().getDoubleExtra("lon",0.0);
-        mainstore=new MainStore(lattitude,longitude);
+        FirebaseUser mUser = firebaseAuth.getCurrentUser();
+        mUser.getIdToken(true)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        String idToken = task.getResult().getToken();
+                        lattitude = getIntent().getDoubleExtra("lat",0.0);
+                        longitude = getIntent().getDoubleExtra("lon",0.0);
+                        System.out.println("AUTH it");
+                        mainstore=new MainStore(idToken,lattitude,longitude);
+                    } else {
+                        System.out.println("In fireuse token" + task.getException());
+                    }
+                });
+
 
         hasWritePermission = false;
         wasCreated = false;
@@ -142,6 +155,7 @@ public class CameraActivity extends AppCompatActivity {
 
         cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
         cameraFacing = CameraCharacteristics.LENS_FACING_BACK;
+
         AutoCapture = findViewById(R.id.camera_auto_capture);
         surfaceTextureListener = new TextureView.SurfaceTextureListener() {
             @Override
@@ -166,7 +180,6 @@ public class CameraActivity extends AppCompatActivity {
             }
         };
 
-        //
         AutoCapture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view)
@@ -240,7 +253,9 @@ public class CameraActivity extends AppCompatActivity {
         TimerTask timerTask2 = new TimerTask() {
             @Override
             public void run() {
-                mainstore.updateGps(lat,lon);
+                if(mainstore != null){
+                    mainstore.updateGps(lat,lon);
+                }
             }
         };
         timer = new Timer();
@@ -619,8 +634,8 @@ public class CameraActivity extends AppCompatActivity {
 
     private void UpdateGoalUpdateLevel(String currentCoinCount, String currentgoal, int currentLevel)
     {
-        if (currentLevel == 5)
-        {
+
+        if (currentLevel == 5){
             currentLevel = 5;
             SharedPreferenceManager.setUserGoalCheck(CameraActivity.this,"");
             SharedPreferenceManager.setUserLevel(CameraActivity.this, currentLevel);
@@ -628,10 +643,12 @@ public class CameraActivity extends AppCompatActivity {
         }
         else{
             currentLevel += 1;
+
             if (currentLevel >= 5)
                 currentLevel = 5;
             SharedPreferenceManager.setUserGoalCheck(CameraActivity.this,"");
             SharedPreferenceManager.setUserLevel(CameraActivity.this, currentLevel);
+
             SaveDataDatabase();
         }
 
@@ -639,7 +656,7 @@ public class CameraActivity extends AppCompatActivity {
 
     private void SaveDataDatabase()
     {
-        DatabasePreferenceManager.setDataDatabase4value(CameraActivity.this,"Level",
+        SharedPreferenceManager.setDataDatabase4value(CameraActivity.this,"Level",
                 "Coins","Goalcheck","Pictures",
                 SharedPreferenceManager.getUserLevel(CameraActivity.this),SharedPreferenceManager.getUserCoins(CameraActivity.this),
                 SharedPreferenceManager.getUserGoalCheck(CameraActivity.this),SharedPreferenceManager.getUserTotalPicturesCapture(CameraActivity.this));

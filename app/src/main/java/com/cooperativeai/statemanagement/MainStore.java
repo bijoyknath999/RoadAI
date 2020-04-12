@@ -31,9 +31,9 @@ public final class MainStore{
         UPDATE_DISTRESS
     }
 
-    public MainStore(double lat, double lon) {
+    public MainStore(String token, double lat, double lon) {
 
-        this.socketConnection = new SocketConnection(this);
+        this.socketConnection = new SocketConnection(this, token);
 
         //Initializing Gps
         GpsLatLon gps = new GpsLatLon(lat,lon);
@@ -99,8 +99,10 @@ public final class MainStore{
     }
 
     public void updateGps(double lat, double lon){
-        store.dispatch(new Action<>(StateAction.UPDATE_GPS,new GpsLatLon(lat,lon)));
-        socketConnection.getSocket().emit("GPS_UPDATE",gson.toJson(new GpsLatLon(lat,lon)));
+        if(this.socketConnection.getAuthStatus()){
+            store.dispatch(new Action<>(StateAction.UPDATE_GPS,new GpsLatLon(lat,lon)));
+            socketConnection.getSocket().emit("GPS_UPDATE",gson.toJson(new GpsLatLon(lat,lon)));
+        }
     }
 
     public void addDistress(Distress distress){

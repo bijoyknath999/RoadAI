@@ -29,6 +29,6 @@ public class Constants {
     public static final int AUTO_CAPTURE_OFF = 1;
     public static final int AUTO_CAPTURE_DISABLED = 2;
     public static final String PREF_AUTO_CAPTURE_PREF = "auto_capture_prefs";
-    public static final String SOCKET_SERVER_URL = "http://192.168.43.218:3000/";
+    public static final String SOCKET_SERVER_URL = "http://192.168.1.208:3000/";
     public static final double NEW_DISTRESS_THRESHOLD = 0.5;
 }
