@@ -49,9 +49,13 @@ import com.cooperativeai.utils.Constants;
 import com.cooperativeai.utils.SharedPreferenceManager;
 import com.cooperativeai.utils.UtilityMethods;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -128,11 +132,20 @@ public class CameraActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         noconnectionDialog = UtilityMethods.showDialogAlert(CameraActivity.this, R.layout.dialog_box);
 
+        FirebaseUser mUser = firebaseAuth.getCurrentUser();
+        mUser.getIdToken(true)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        String idToken = task.getResult().getToken();
+                        lattitude = getIntent().getDoubleExtra("lat",0.0);
+                        longitude = getIntent().getDoubleExtra("lon",0.0);
+                        System.out.println("AUTH it");
+                        mainstore=new MainStore(idToken,lattitude,longitude);
+                    } else {
+                        System.out.println("In fireuse token" + task.getException());
+                    }
+                });
 
-
-        lattitude = getIntent().getDoubleExtra("lat",0.0);
-        longitude = getIntent().getDoubleExtra("lon",0.0);
-        mainstore=new MainStore(lattitude,longitude);
 
         hasWritePermission = false;
         wasCreated = false;
@@ -240,7 +253,9 @@ public class CameraActivity extends AppCompatActivity {
         TimerTask timerTask2 = new TimerTask() {
             @Override
             public void run() {
-                mainstore.updateGps(lat,lon);
+                if(mainstore != null){
+                    mainstore.updateGps(lat,lon);
+                }
             }
         };
         timer = new Timer();
