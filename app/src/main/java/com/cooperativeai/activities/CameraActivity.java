@@ -46,6 +46,7 @@ import com.cooperativeai.R;
 import com.cooperativeai.communication.SocketConnection;
 import com.cooperativeai.statemanagement.MainStore;
 import com.cooperativeai.utils.Constants;
+import com.cooperativeai.utils.DatabasePreferenceManager;
 import com.cooperativeai.utils.SharedPreferenceManager;
 import com.cooperativeai.utils.UtilityMethods;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -656,7 +657,7 @@ public class CameraActivity extends AppCompatActivity {
 
     private void SaveDataDatabase()
     {
-        SharedPreferenceManager.setDataDatabase4value(CameraActivity.this,"Level",
+        DatabasePreferenceManager.setDataDatabase4value(CameraActivity.this,"Level",
                 "Coins","Goalcheck","Pictures",
                 SharedPreferenceManager.getUserLevel(CameraActivity.this),SharedPreferenceManager.getUserCoins(CameraActivity.this),
                 SharedPreferenceManager.getUserGoalCheck(CameraActivity.this),SharedPreferenceManager.getUserTotalPicturesCapture(CameraActivity.this));

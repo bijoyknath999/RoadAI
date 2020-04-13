@@ -12,5 +12,6 @@
     <string name="openweatherapi">042b832fea72efc6ef580c6316efaf78</string>
     <string name="drawer_open">Open Navigation Drawer</string>
     <string name="drawer_close">Close Navigation Drawer</string>
+    <string name="google_map_api">AIzaSyBoMNTCydpfwqE9cPvAa3rIFP1Uuxwl4-s</string>
 
 </resources>

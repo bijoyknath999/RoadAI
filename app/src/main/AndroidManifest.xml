@@ -19,16 +19,26 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".activities.EditProfile"
-            android:windowSoftInputMode="stateHidden"/>
+        <activity android:name=".Map"></activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_map_api" />
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false"/>
+        <activity
+            android:name=".activities.EditProfile"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.ForgetPassword"
             android:theme="@style/AppTheme2"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.SetupAccount"
             android:theme="@style/AppTheme2"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden" />
         <activity android:name=".activities.HomeFragment" />
         <activity
             android:name=".activities.Intro"
@@ -36,7 +46,7 @@
         <activity
             android:name=".activities.WelcomePage"
             android:theme="@style/AppTheme2"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden" />
         <activity android:name=".activities.ProfileFragment" />
         <activity
             android:name=".activities.CameraActivity"
@@ -44,7 +54,7 @@
         <activity
             android:name=".activities.RegistrationActivity"
             android:theme="@style/AppTheme2"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.SplashActivity"
             android:theme="@style/cameraTheme">

@@ -12,6 +12,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.cooperativeai.Map;
 import com.cooperativeai.R;
 import com.cooperativeai.utils.SharedPreferenceManager;
 import com.cooperativeai.utils.UtilityMethods;
@@ -65,7 +67,7 @@ public class ProfileFragment extends Fragment {
     //Send user to edi profile activity
     private void SendUserEditProfile()
     {
-        Intent EditProfileintent = new Intent(getContext(),EditProfile.class);
+        Intent EditProfileintent = new Intent(getContext(), Map.class);
         startActivity(EditProfileintent);
         getActivity().overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
         dialog.show();

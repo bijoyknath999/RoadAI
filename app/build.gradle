@@ -57,6 +57,7 @@ dependencies {
     implementation 'com.github.hajiyevelnur92:intentanimation:1.0'
     implementation 'com.timqi.sectorprogressview:library:2.0.1'
     implementation 'com.github.shrikanth7698:Custom-Navigation-Drawer:v0.0.1'
+    implementation 'com.google.android.gms:play-services-maps:16.0.0'
 
 
     //<-- Socket and Redux
