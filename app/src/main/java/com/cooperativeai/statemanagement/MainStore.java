@@ -103,6 +103,11 @@ public final class MainStore{
             store.dispatch(new Action<>(StateAction.UPDATE_GPS,new GpsLatLon(lat,lon)));
             socketConnection.getSocket().emit("GPS_UPDATE",gson.toJson(new GpsLatLon(lat,lon)));
         }
+        getDataForMap();
+    }
+
+    public void getDataForMap(){
+        this.socketConnection.getSocket().emit("GET_MAP_DATA");
     }
 
     public void addDistress(Distress distress){
