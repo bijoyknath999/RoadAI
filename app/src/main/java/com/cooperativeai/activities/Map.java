@@ -17,6 +17,8 @@ import android.view.Display;
 import android.widget.Toast;
 
 import com.cooperativeai.R;
+import com.cooperativeai.communication.SocketConnection;
+import com.cooperativeai.statemanagement.MS;
 import com.cooperativeai.statemanagement.MainStore;
 import com.cooperativeai.statemanagement.StateProps.Distress;
 import com.cooperativeai.statemanagement.StateProps.GpsLatLon;
@@ -31,6 +33,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.kwabenaberko.openweathermaplib.models.common.Main;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -48,13 +51,8 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
     private LatLng latLng;
     private ActionBar actionBar;
     private Context context;
-    MainStore mainstore;
+    MainStore mainstore = MS.mainStore;
     MarkerOptions markerOptions;
-
-    public Map(MainStore mainstore) {
-        this.mainstore = mainstore;
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

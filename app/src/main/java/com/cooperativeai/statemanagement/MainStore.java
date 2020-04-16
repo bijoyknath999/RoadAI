@@ -99,11 +99,10 @@ public final class MainStore{
     }
 
     public void updateGps(double lat, double lon){
-        if(this.socketConnection.getAuthStatus()){
-            store.dispatch(new Action<>(StateAction.UPDATE_GPS,new GpsLatLon(lat,lon)));
-            socketConnection.getSocket().emit("GPS_UPDATE",gson.toJson(new GpsLatLon(lat,lon)));
+        if(this.socketConnection.getAuthStatus()) {
+            store.dispatch(new Action<>(StateAction.UPDATE_GPS, new GpsLatLon(lat, lon)));
+            socketConnection.getSocket().emit("GPS_UPDATE", gson.toJson(new GpsLatLon(lat, lon)));
         }
-        getDataForMap();
     }
 
     public void getDataForMap(){

@@ -45,6 +45,7 @@ import androidx.core.content.ContextCompat;
 
 import com.cooperativeai.R;
 import com.cooperativeai.communication.SocketConnection;
+import com.cooperativeai.statemanagement.MS;
 import com.cooperativeai.statemanagement.MainStore;
 import com.cooperativeai.utils.Constants;
 import com.cooperativeai.utils.DatabasePreferenceManager;
@@ -60,6 +61,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.kwabenaberko.openweathermaplib.models.common.Main;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -135,7 +137,6 @@ public class CameraActivity extends AppCompatActivity {
         UsersDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
         firebaseAuth = FirebaseAuth.getInstance();
         noconnectionDialog = UtilityMethods.showDialogAlert(CameraActivity.this, R.layout.dialog_box);
-
         FirebaseUser mUser = firebaseAuth.getCurrentUser();
         mUser.getIdToken(true)
                 .addOnCompleteListener(task -> {
@@ -144,7 +145,8 @@ public class CameraActivity extends AppCompatActivity {
                         lattitude = getIntent().getDoubleExtra("lat",0.0);
                         longitude = getIntent().getDoubleExtra("lon",0.0);
                         System.out.println("AUTH it");
-                        mainstore=new MainStore(idToken,lattitude,longitude);
+                        new MS(idToken,lattitude,longitude);
+                        mainstore=MS.mainStore;
                     } else {
                         System.out.println("In fireuse token" + task.getException());
                     }
@@ -156,7 +158,6 @@ public class CameraActivity extends AppCompatActivity {
 
         final AssetManager mngr =getApplicationContext().getAssets();
         detectorActivity= new DetectorActivity(mngr, this, hasLocationPermission, mainstore);
-        map = new Map(mainstore);
 
 
         cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
