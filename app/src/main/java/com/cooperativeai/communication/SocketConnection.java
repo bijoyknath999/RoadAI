@@ -67,7 +67,6 @@ public class SocketConnection extends Application {
         mSocket.on(Socket.EVENT_CONNECT_ERROR,onConnectError);
         mSocket.on("RESPONCE_STATE",onResposeState);
         mSocket.on("UPDATE_DISTRESS",onUpdate_DISTRESS);
-        mSocket.on("MAP_RESPONSE",onMapResponse);
     }
 
     public void desposeListeners(){
@@ -80,7 +79,6 @@ public class SocketConnection extends Application {
         mSocket.off(Socket.EVENT_CONNECT_ERROR,onConnectError);
         mSocket.off("RESPONCE_STATE",onResposeState);
         mSocket.off("UPDATE_DISTRESS",onUpdate_DISTRESS);
-        mSocket.off("MAP_RESPONSE",onMapResponse);
         mSocket.disconnect();
     }
 
@@ -126,14 +124,6 @@ public class SocketConnection extends Application {
             System.out.println("Connected to server");
         }).start();
     };
-
-
-    private Emitter.Listener onMapResponse = (args -> {
-        new Thread(() -> {
-            LinkedList<Distress> distressList = getList((String) args[0],Distress.class);
-            System.out.println(args[0]);
-        }).start();
-    });
 
     private Emitter.Listener onDisconnect = (args) -> {
         new Thread(()->{

@@ -32,6 +32,7 @@ import android.view.Menu;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -109,6 +110,7 @@ public class CameraActivity extends AppCompatActivity {
     private String GoalCheck;
     private boolean hasLocationPermission;
     private DetectorActivity detectorActivity;
+    private Map map;
     private Bitmap image;
     private LocationManager locationManager;
 
@@ -120,6 +122,7 @@ public class CameraActivity extends AppCompatActivity {
 
     private double lattitude,longitude,lat,lon;
     private Dialog noconnectionDialog;
+    private ImageView mapBTN;
 
 
 
@@ -153,11 +156,20 @@ public class CameraActivity extends AppCompatActivity {
 
         final AssetManager mngr =getApplicationContext().getAssets();
         detectorActivity= new DetectorActivity(mngr, this, hasLocationPermission, mainstore);
+        map = new Map(mainstore);
+
 
         cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
         cameraFacing = CameraCharacteristics.LENS_FACING_BACK;
 
         AutoCapture = findViewById(R.id.camera_auto_capture);
+        mapBTN = findViewById(R.id.button_map);
+        mapBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(CameraActivity.this,Map.class));
+            }
+        });
         surfaceTextureListener = new TextureView.SurfaceTextureListener() {
             @Override
             public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int i, int i1) {

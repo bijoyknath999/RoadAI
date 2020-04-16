@@ -8,7 +8,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
     <uses-feature android:name="android.hardware.camera2.full" />
 
     <application
@@ -19,7 +18,13 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Map"></activity>
+        <uses-library android:name="com.google.android.maps"/>
+        <activity android:name=".activities.Map"
+            android:supportsPictureInPicture="true"
+            android:configChanges=
+                "screenSize|smallestScreenSize|screenLayout|orientation"
+            android:launchMode="singleTask"
+            android:taskAffinity=".activities.Map"></activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

@@ -7,18 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.cooperativeai.Map;
 import com.cooperativeai.R;
 import com.cooperativeai.utils.SharedPreferenceManager;
 import com.cooperativeai.utils.UtilityMethods;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
 
 public class ProfileFragment extends Fragment {
 
@@ -67,7 +63,7 @@ public class ProfileFragment extends Fragment {
     //Send user to edi profile activity
     private void SendUserEditProfile()
     {
-        Intent EditProfileintent = new Intent(getContext(), Map.class);
+        Intent EditProfileintent = new Intent(getContext(), EditProfile.class);
         startActivity(EditProfileintent);
         getActivity().overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
         dialog.show();
