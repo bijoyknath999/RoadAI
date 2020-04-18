@@ -22,30 +22,30 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/welcome_image_1"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:src="@drawable/roadai2"
-            app:civ_border_color="@color/colorAccent"
-            android:layout_gravity="center"
-            app:civ_border_width="2dp" />
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/welcome_image_1"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:src="@drawable/roadai2"
+                    app:civ_border_color="@color/colorAccent"
+                    android:layout_gravity="center"
+                    app:civ_border_width="2dp" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Welcome, Guest!"
-            android:textAlignment="center"
-            android:textSize="30sp"
-            android:layout_margin="5dp"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/welcome_page_txt"
-                android:textAlignment="center"
-                android:textSize="18sp"
-                android:textColor="@color/color2"
-                android:layout_margin="5dp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Welcome, Guest!"
+                    android:textAlignment="center"
+                    android:textSize="30sp"
+                    android:layout_margin="5dp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/welcome_page_txt"
+                    android:textAlignment="center"
+                    android:textSize="18sp"
+                    android:textColor="@color/color2"
+                    android:layout_margin="5dp"/>
 
             </LinearLayout>
 
@@ -56,33 +56,33 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="bottom"
-            android:weightSum="1">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="bottom"
+                android:weightSum="1">
 
-            <Button
-                android:id="@+id/welcome_login_btn"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_margin="8dp"
-                android:layout_weight="0.5"
-                android:background="@drawable/welcome_custom_btn2"
-                android:text="Log in" />
+                <Button
+                    android:id="@+id/welcome_login_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_margin="8dp"
+                    android:layout_weight="0.5"
+                    android:background="@drawable/welcome_custom_btn2"
+                    android:text="Log in" />
 
-            <Button
-                android:id="@+id/welcome_signup_btn"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_margin="8dp"
-                android:layout_weight="0.5"
-                android:text="Sign up"
-                android:background="@drawable/welcome_custom_btn1"
-                android:backgroundTint="@color/color3"/>
+                <Button
+                    android:id="@+id/welcome_signup_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_margin="8dp"
+                    android:layout_weight="0.5"
+                    android:text="Sign up"
+                    android:background="@drawable/welcome_custom_btn1"
+                    android:backgroundTint="@color/color3"/>
 
-        </LinearLayout>
+            </LinearLayout>
 
         </RelativeLayout>
 

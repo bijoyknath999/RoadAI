@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- for camera activity -->
+    <dimen name="camlayout1marginbottom">50dp</dimen>
+    <dimen name="camtextsize1">18sp</dimen>
+    <dimen name="camimageview1height">40dp</dimen>
+    <dimen name="camimageview2height">40dp</dimen>
+    <!-- for edit profile -->
+    <dimen name="editlayout1marginbottom">40dp</dimen>
+    <dimen name="editlayout1margintop">100dp</dimen>
+    <dimen name="editcircleimageheightnwidth">150dp</dimen>
+    <dimen name="edittextview1paddingleft">10dp</dimen>
+    <dimen name="edittextview1marginleft">10dp</dimen>
+    <dimen name="edittextview1marginbottom">5dp</dimen>
+    <dimen name="edittextview1textsize">18sp</dimen>
+
+    <!-- for slide layout -->
+    <!-- for profile fragment -->
+    <!-- for profile fragment -->
+    <!-- for login layout -->
+    <!-- for loading layout-->
+    <!-- for dialog box-->
+    <!-- for welcome page -->
+    <!-- for splash screen-->
+    <!-- for setup activity-->
+    <!-- for main activity-->
+</resources>

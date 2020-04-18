@@ -172,7 +172,7 @@ public class SplashActivity extends AppCompatActivity {
                         editor.putString(Constants.PREFS_USER_TOTAL_PICTURES, pictures);
                         editor.putString(Constants.PREFS_USER_GOAL_CHECK, goalcheck);
                         editor.putString(Constants.PREFS_USER_LAST_ACCESSED, lastuseddate);
-                        editor.apply();
+                        editor.commit();
                         SharedPreferenceManager.setUserLevel(SplashActivity.this, level);
 
                     }

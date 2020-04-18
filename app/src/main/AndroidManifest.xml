@@ -21,11 +21,13 @@
         <uses-library android:name="com.google.android.maps"/>
         <activity android:name=".activities.Map"
             android:supportsPictureInPicture="true"
-            android:configChanges=
-                "screenSize|smallestScreenSize|screenLayout|orientation"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:launchMode="singleTask"
-            android:taskAffinity=".activities.Map"></activity>
-
+            android:taskAffinity=".activities.Map"
+            android:resizeableActivity="true"
+            android:excludeFromRecents="true"
+            android:autoRemoveFromRecents="true"
+            android:theme="@style/cameraTheme"/>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_map_api" />

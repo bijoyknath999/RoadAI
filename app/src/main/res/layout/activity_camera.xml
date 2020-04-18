@@ -12,10 +12,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <TextureView
-        android:id="@+id/textureView_camera_activity"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        <TextureView
+            android:id="@+id/textureView_camera_activity"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -37,14 +37,14 @@
                 android:textColor="@color/color1"
                 android:textStyle="normal"/>
 
-    <ImageView
-        android:id="@+id/button_take_picture"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        app:backgroundTint="@color/colorPrimary"
-        app:elevation="4dp"
-        android:src="@drawable/ic_photo_camera"
-        android:layout_weight="1"/>
+            <ImageView
+                android:id="@+id/button_take_picture"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                app:backgroundTint="@color/colorPrimary"
+                app:elevation="4dp"
+                android:src="@drawable/ic_photo_camera"
+                android:layout_weight="1"/>
 
             <ImageView
                 android:id="@+id/button_map"

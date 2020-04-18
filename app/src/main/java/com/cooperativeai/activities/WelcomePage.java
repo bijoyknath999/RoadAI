@@ -236,7 +236,7 @@ public class WelcomePage extends AppCompatActivity {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                Toast.makeText(WelcomePage.this,"Signed In Successfully",Toast.LENGTH_LONG).show();
+                //Toast.makeText(WelcomePage.this,"Signed In Successfully",Toast.LENGTH_LONG).show();
                 FirebaseGoogleAuth(account);
             }
             catch (ApiException e)
@@ -272,10 +272,6 @@ public class WelcomePage extends AppCompatActivity {
                             else
                             {
                                 SavaData();
-                                startActivity(new Intent(WelcomePage.this, MainActivity.class));
-                                overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
-                                finish();
-                                dialog.dismiss();
                             }
                         }
 
@@ -360,11 +356,6 @@ public class WelcomePage extends AppCompatActivity {
                     else
                     {
                         SavaData();
-                        startActivity(new Intent(WelcomePage.this, MainActivity.class));
-                        overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
-                        finish();
-                        Toast.makeText(WelcomePage.this, "Loged in Successfully", Toast.LENGTH_SHORT).show();
-                        dialog.dismiss();
                     }
                 }
 
@@ -424,10 +415,7 @@ public class WelcomePage extends AppCompatActivity {
                         editor.putString(Constants.PREFS_USER_PASSWORD,"");
                     }
                     SharedPreferenceManager.setUserLevel(WelcomePage.this,level);
-                    editor.apply();
-
-
-
+                    editor.commit();
                 }
             }
 
@@ -436,6 +424,11 @@ public class WelcomePage extends AppCompatActivity {
 
             }
         });
+        startActivity(new Intent(WelcomePage.this, MainActivity.class));
+        overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
+        finish();
+        Toast.makeText(WelcomePage.this,"Signed In Successfully",Toast.LENGTH_LONG).show();
+        dialog.dismiss();
     }
 
     @Override

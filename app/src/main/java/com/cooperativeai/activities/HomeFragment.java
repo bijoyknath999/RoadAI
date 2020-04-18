@@ -79,8 +79,8 @@ public class HomeFragment extends Fragment {
                 ConvertCoinToWalletSaveLastUsedDateSaveLevel();
                 IcreaseGoalAndSaveData();
             }
-
-            SaveInDatabase();
+            if (!lastUsedDateAsString.isEmpty())
+                SaveInDatabase();
         }
         else
         {
@@ -188,4 +188,9 @@ public class HomeFragment extends Fragment {
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        SaveInDatabase();
+    }
 }

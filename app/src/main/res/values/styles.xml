@@ -1,5 +1,4 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
@@ -7,7 +6,6 @@
         <item name="colorPrimaryDark">@color/color3</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
-
     <style name="cameraTheme" parent="AppTheme">
         <item name="colorPrimary">@color/color4</item>
         <item name="colorPrimaryDark">@color/color4</item>
@@ -18,15 +16,14 @@
         <item name="windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@null</item>
     </style>
-
     <style name="AppTheme2" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/color4</item>
         <item name="colorPrimaryDark">@color/color4</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
     </style>
-
     <style name="loadingDialog" parent="android:Theme">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
@@ -37,8 +34,6 @@
         <item name="android:windowMinWidthMinor">90%</item>
         <item name="android:backgroundDimEnabled">true</item>
     </style>
-
-
     <style name="drawerText" parent="TextAppearance.AppCompat">
         <item name="android:textColor">@color/color1</item>
         <item name="android:textSize">20sp</item>

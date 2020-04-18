@@ -1,12 +1,16 @@
 package com.cooperativeai.activities;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.app.ActionBar;
 import android.app.PictureInPictureParams;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -27,6 +31,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -47,8 +53,8 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private Geocoder geo;
-    private double latitude = 0.0,longitude = 0.0;
-    private LatLng latLng;
+    private double latitude = 0.0,longitude = 0.0,latitude2= 0.0,longitude2 = 0.0;
+    private LatLng latLng, latLng2;
     private ActionBar actionBar;
     private Context context;
     MainStore mainstore = MS.mainStore;
@@ -64,14 +70,36 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
         SupportMapFragment supportMapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.google_map);
         supportMapFragment.getMapAsync(this);
-
         OnPiP();
 
-        if (mainstore!=null)
-        {
-            mainstore.getConnection().getSocket().on("MAP_RESPONSE", onMapResponse);
-            mainstore.getDataForMap();
-        }
+        geo = new Geocoder(Map.this, Locale.getDefault());
+        FusedLocationProviderClient client = new FusedLocationProviderClient(Map.this);
+        client.getLastLocation()
+                .addOnSuccessListener(new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location!=null) {
+                            latitude2 = location.getLatitude();
+                            longitude2 = location.getLongitude();
+                            try {
+                                if (geo == null)
+                                    geo = new Geocoder(Map.this, Locale.getDefault());
+                                List<Address> address = geo.getFromLocation(latitude,longitude, 1);
+                                if (address.size() > 0) {
+                                }
+                            } catch (IOException ex) {
+                                if (ex != null)
+                                    Toast.makeText(Map.this, "Error:" + ex.getMessage().toString(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(Map.this, "Location Fetching failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
 
@@ -95,21 +123,35 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode);
     }
 
-    private Emitter.Listener onMapResponse = (args -> {
-        new Thread(() -> {
+    private Emitter.Listener onMapResponse = args -> {
+        runOnUiThread(() -> {
             LinkedList<Distress> distressList = getList((String) args[0],Distress.class);
-            if (distressList!=null)
-            for (int i = 0; i<distressList.size();i++)
-            {
-                GpsLatLon gps = distressList.get(i).getGps();
-                latitude = gps.getLat();
-                longitude = gps.getLon();
-                latLng = new LatLng(latitude, longitude);
-                markerOptions = new MarkerOptions().position(latLng).title("");
-            }
             System.out.println(args[0]);
-        }).start();
-    });
+            if (distressList!=null)
+                for (int i = 0; i<distressList.size();i++)
+                {
+                    GpsLatLon gps = distressList.get(i).getGps();
+                    String distress = distressList.get(i).getDistress();
+                    latLng2 = new LatLng(latitude2,longitude2);
+                    latitude = gps.getLat();
+                    longitude = gps.getLon();
+                    latLng = new LatLng(latitude, longitude);
+                    if (distress.equals("pothole"))
+                        mMap.addMarker(new MarkerOptions().position(latLng).title("").icon(bitmapDescriptor(Map.this,R.drawable.ic_circle_pothole)));
+                    else if (distress.equals("crack"))
+                        mMap.addMarker(new MarkerOptions().position(latLng).title("").icon(bitmapDescriptor(Map.this,R.drawable.ic_circle_cracks)));
+                    else if (distress.equals("patche"))
+                        mMap.addMarker(new MarkerOptions().position(latLng).title("").icon(bitmapDescriptor(Map.this,R.drawable.ic_circle_patches)));
+                    else if (distress.equals("ravelling"))
+                        mMap.addMarker(new MarkerOptions().position(latLng).title("").icon(bitmapDescriptor(Map.this,R.drawable.ic_circle_ravelling)));
+
+                    mMap.addMarker(new MarkerOptions().position(latLng2).title(""));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng2));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng2));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng2, 12));
+                }
+        });
+    };
 
     public <Distress> LinkedList<Distress> getList(String jsonArray, Class<Distress> clazz) {
         Type typeOfT = TypeToken.getParameterized(LinkedList.class, clazz).getType();
@@ -120,22 +162,30 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
 
         mMap = googleMap;
-        if (markerOptions!=null) {
-            mMap.addMarker(markerOptions);
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
+        if (mainstore!=null && mMap!=null)
+        {
+            mainstore.getConnection().getSocket().on("MAP_RESPONSE", onMapResponse);
+            mainstore.getDataForMap();
         }
 
     }
 
+    private BitmapDescriptor bitmapDescriptor(Context context, int vectorId)
+    {
+        Drawable drawable = ContextCompat.getDrawable(context,vectorId);
+        drawable.setBounds(0,0,drawable.getIntrinsicWidth(),drawable.getIntrinsicHeight());
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),drawable.getIntrinsicHeight(),Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
 
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if (mainstore!=null)
-        mainstore.getConnection().getSocket().off("MAP_RESPONSE",onMapResponse);
+            mainstore.getConnection().getSocket().off("MAP_RESPONSE",onMapResponse);
     }
 
     @Override

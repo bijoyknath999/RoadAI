@@ -26,7 +26,6 @@ public class Intro extends AppCompatActivity {
     private TextView[] dots;
 
     private SlideAdapter slideAdapter;
-    private Dialog dialog;
 
 
 
@@ -42,7 +41,6 @@ public class Intro extends AppCompatActivity {
         slideAdapter = new SlideAdapter(this);
         SlidePager.setAdapter(slideAdapter);
 
-        dialog = UtilityMethods.showDialog(Intro.this, R.layout.layout_loading_dialog);
 
         addDots(0);
         SlidePager.addOnPageChangeListener(viewListener);
@@ -54,7 +52,6 @@ public class Intro extends AppCompatActivity {
                 IntroIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(IntroIntent);
                 finish();
-                dialog.show();
                 overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
 
                 SharedPreferences sharedPreferences = getSharedPreferences("sharedPreferences",MODE_PRIVATE);

@@ -78,6 +78,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static maes.tech.intentanim.CustomIntent.customType;
+
 public class CameraActivity extends AppCompatActivity {
 
     private static final int CAMERA_REQUEST_CODE = 11;
@@ -105,7 +107,7 @@ public class CameraActivity extends AppCompatActivity {
     private File galleryFolder;
     private boolean hasWritePermission,hasCameraPermission;
     private boolean wasCreated;
-    private Timer timer;
+    private Timer timer,timer2;
     private TextView AutoCapture;
     private FirebaseAuth firebaseAuth;
     private DatabaseReference UsersDatabaseRef;
@@ -169,6 +171,7 @@ public class CameraActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(CameraActivity.this,Map.class));
+                customType(CameraActivity.this, "fadein-to-fadeout");
             }
         });
         surfaceTextureListener = new TextureView.SurfaceTextureListener() {
@@ -253,8 +256,10 @@ public class CameraActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
-                        lat = location.getLatitude();
-                        lon = location.getLongitude();
+                        if (location!=null) {
+                            lat = location.getLatitude();
+                            lon = location.getLongitude();
+                        }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -272,8 +277,8 @@ public class CameraActivity extends AppCompatActivity {
                 }
             }
         };
-        timer = new Timer();
-        timer.scheduleAtFixedRate(timerTask2, 1, 10000);
+        timer2 = new Timer();
+        timer2.scheduleAtFixedRate(timerTask2, 1, 10000);
 
 
     }
@@ -324,7 +329,8 @@ public class CameraActivity extends AppCompatActivity {
             } else {
                 getPermission(Constants.WRITE_PERMISSION);
             }
-        } catch (CameraAccessException e) {
+        }
+        catch (CameraAccessException e) {
             e.printStackTrace();
         }
     }
@@ -361,7 +367,8 @@ public class CameraActivity extends AppCompatActivity {
 
                         }
                     }, backgroundHandler);
-        } catch (CameraAccessException e) {
+        }
+        catch (CameraAccessException e) {
             e.printStackTrace();
         }
     }
@@ -384,7 +391,8 @@ public class CameraActivity extends AppCompatActivity {
                     }
                 }
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
             Log.i("TAG", "setupCamera: " + e.getMessage());
             Toast.makeText(CameraActivity.this, "Error occurred in setup", Toast.LENGTH_SHORT).show();
@@ -591,9 +599,10 @@ public class CameraActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         openBackgroundThread();
         if (textureView.isAvailable()) {
             setupCamera();
@@ -602,6 +611,7 @@ public class CameraActivity extends AppCompatActivity {
             textureView.setSurfaceTextureListener(surfaceTextureListener);
         }
     }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -614,7 +624,8 @@ public class CameraActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        if (timer2 != null)
+            timer2.cancel();
         mainstore.getConnection().desposeListeners();
     }
 

@@ -54,26 +54,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-        <CheckBox
-            android:id="@+id/remeber_check_box"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Remember me"
-            android:layout_margin="10dp"
-            android:padding="10dp"
-            android:textSize="14sp"
-            android:textColor="@color/color2"/>
+            <CheckBox
+                android:id="@+id/remeber_check_box"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Remember me"
+                android:layout_margin="10dp"
+                android:padding="10dp"
+                android:textSize="14sp"
+                android:textColor="@color/color2"/>
 
-        <TextView
-            android:id="@+id/sign_in_forget_pass"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="10dp"
-            android:layout_centerInParent="true"
-            android:text="Forget Password"
-            android:textColor="@color/color2"
-            android:textSize="14sp" />
+            <TextView
+                android:id="@+id/sign_in_forget_pass"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:layout_centerInParent="true"
+                android:text="Forget Password"
+                android:textColor="@color/color2"
+                android:textSize="14sp" />
 
         </RelativeLayout>
 

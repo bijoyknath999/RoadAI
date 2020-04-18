@@ -169,8 +169,10 @@ class DetectorActivity {
                 .addOnSuccessListener(new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
-                        latitude = location.getLatitude();
-                        longitude = location.getLongitude();
+                        if (location!=null) {
+                            latitude = location.getLatitude();
+                            longitude = location.getLongitude();
+                        }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

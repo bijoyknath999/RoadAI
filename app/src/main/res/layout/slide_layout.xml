@@ -27,12 +27,12 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:layout_margin="0dp">
-    <ImageView
-        android:id="@+id/slide_img"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/slide_img_1"
-        android:layout_margin="40dp"/>
+        <ImageView
+            android:id="@+id/slide_img"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/slide_img_1"
+            android:layout_margin="40dp"/>
     </RelativeLayout>
 
 </LinearLayout>
