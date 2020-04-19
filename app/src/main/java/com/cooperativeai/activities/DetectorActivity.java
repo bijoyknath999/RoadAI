@@ -29,6 +29,7 @@ import androidx.annotation.NonNull;
 
 import com.cooperativeai.env.ImageUtils;
 import com.cooperativeai.env.Logger;
+import com.cooperativeai.statemanagement.MS;
 import com.cooperativeai.statemanagement.MainStore;
 import com.cooperativeai.statemanagement.StateProps.BoundingBox;
 import com.cooperativeai.statemanagement.StateProps.Distress;
@@ -127,15 +128,18 @@ class DetectorActivity {
 
     public void sendtoDistressServer(final Classifier.Recognition result)
     {
-        String distress = "";
-        int severity = 0;
-        double classScore = 0;
-        distress=result.getTitle();
-        classScore=result.getConfidence()*100;
-        final RectF location = result.getLocation();
-        BoundingBox boundingbox= new BoundingBox(location.left, location.top, location.right, location.bottom);
-        GpsLatLon gps = new GpsLatLon(latitude,longitude);
-        mainStore.addDistress(new Distress(gps, distress, severity, classScore, boundingbox));
+        System.out.println("New Distress found");
+        new Thread(() -> {
+            int severity = 0;
+            final String distress=result.getTitle();
+            final double classScore=result.getConfidence()*100;
+            final RectF location = result.getLocation();
+            BoundingBox boundingbox= new BoundingBox(location.left, location.top, location.right, location.bottom);
+            GpsLatLon gps = new GpsLatLon(latitude,longitude);
+            System.out.println("socketid2:" + gps.getLat() + " " + gps.getLon());
+            MS.mainStore.addDistress(new Distress(gps, distress, severity, classScore, boundingbox));
+        }).start();
+        //mainStore.addDistress(new Distress(gps, distress, severity, classScore, boundingbox));
     }
 
     protected void detection(Bitmap image) {

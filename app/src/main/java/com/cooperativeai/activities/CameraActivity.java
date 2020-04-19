@@ -149,8 +149,8 @@ public class CameraActivity extends AppCompatActivity {
                         lattitude = getIntent().getDoubleExtra("lat",0.0);
                         longitude = getIntent().getDoubleExtra("lon",0.0);
                         System.out.println("AUTH it");
-                        new MS(idToken,lattitude,longitude);
-                        mainstore=MS.mainStore;
+                        mainstore = new MainStore(idToken,lattitude,longitude);
+                        MS.setMainStore(mainstore);
                     } else {
                         System.out.println("In fireuse token" + task.getException());
                     }
@@ -255,21 +255,13 @@ public class CameraActivity extends AppCompatActivity {
         // For Update gps in every 10 sec
         FusedLocationProviderClient client = new FusedLocationProviderClient(CameraActivity.this);
         client.getLastLocation()
-                .addOnSuccessListener(new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        if (location!=null) {
-                            lat = location.getLatitude();
-                            lon = location.getLongitude();
-                        }
+                .addOnSuccessListener(location -> {
+                    if (location!=null) {
+                        lat = location.getLatitude();
+                        lon = location.getLongitude();
                     }
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(CameraActivity.this, "Location Fetching failed", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                .addOnFailureListener(e -> Toast.makeText(CameraActivity.this, "Location Fetching failed", Toast.LENGTH_SHORT).show());
 
         TimerTask timerTask2 = new TimerTask() {
             @Override

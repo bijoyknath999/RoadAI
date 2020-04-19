@@ -4,6 +4,7 @@ package com.cooperativeai.statemanagement;
 
 
 import android.location.Location;
+import android.util.Log;
 
 import com.cooperativeai.communication.SocketConnection;
 import com.cooperativeai.statemanagement.StateProps.Distress;
@@ -47,7 +48,7 @@ public final class MainStore{
                 .build();
 
         //Initializing State
-        this.store = new Store<>(this::reduce, state);
+        this.store = new Store<>(this::reduce, state, new Logger<>("State"));
 
     }
 
@@ -111,7 +112,7 @@ public final class MainStore{
 
     public void addDistress(Distress distress){
         float[] results = new float[1];
-
+        System.out.println("Works ok");
         boolean isPresent = false;
         boolean toUpdate = false;
         int newSeverity = 0;
@@ -174,4 +175,18 @@ public final class MainStore{
     public SocketConnection getConnection(){
         return socketConnection;
     }
+
+    class Logger<A, S> implements Store.Middleware<A, S> {
+        private final String tag;
+        public Logger(String tag) {
+            this.tag = tag;
+        }
+        public void dispatch(Store<A, S> store, A action, Store.NextDispatcher<A> next) {
+            Log.d(tag, "--> " + action.toString());
+            next.dispatch(action);
+            Log.d(tag, "<-- " + store.getState().toString());
+        }
+    }
 }
+
+
