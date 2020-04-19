@@ -22,6 +22,7 @@ import android.hardware.camera2.params.StreamConfigurationMap;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -127,6 +128,7 @@ public class CameraActivity extends AppCompatActivity {
     private double lattitude,longitude,lat,lon;
     private Dialog noconnectionDialog;
     private ImageView mapBTN;
+    private File storageDirectory;
 
 
 
@@ -439,7 +441,14 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     private void createGalleryFolder() {
-        File storageDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+        {
+           storageDirectory = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        }
+        else
+        {
+            storageDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        }
         galleryFolder = new File(storageDirectory, getResources().getString(R.string.app_name));
         if (!galleryFolder.exists()) {
             wasCreated = galleryFolder.mkdirs();
@@ -610,6 +619,14 @@ public class CameraActivity extends AppCompatActivity {
         } else {
             textureView.setSurfaceTextureListener(surfaceTextureListener);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!textureView.isAvailable())
+            textureView.setSurfaceTextureListener(surfaceTextureListener);
+
     }
 
     @Override
