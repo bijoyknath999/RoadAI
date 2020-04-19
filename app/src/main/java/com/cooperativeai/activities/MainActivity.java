@@ -131,23 +131,9 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
             //if gps is on the it will work and get current location either alert box will show up
             if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 onLocationChanged(location);
-                FusedLocationProviderClient client = new FusedLocationProviderClient(MainActivity.this);
-                client.getLastLocation()
-                        .addOnSuccessListener(new OnSuccessListener<Location>() {
-                            @Override
-                            public void onSuccess(Location location) {
-                                if (location!=null) {
-                                    latitude = location.getLatitude();
-                                    longitude = location.getLongitude();
-                                }
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(MainActivity.this, "Location Fetching failed", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                GpsLocation gpsLocation = new GpsLocation(MainActivity.this);
+                latitude = gpsLocation.getLatitude();
+                longitude = gpsLocation.getLongitude();
             }
             else
             {
@@ -190,7 +176,6 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
         helper.getCurrentWeatherByGeoCoordinates(latitude,longitude, new CurrentWeatherCallback() {
             @Override
             public void onSuccess(CurrentWeather currentWeather) {
-
                 SharedPreferenceManager.setUserLocationTemp(MainActivity.this,""+currentWeather.getMain().getTempMax()+"° Celsius");
             }
 

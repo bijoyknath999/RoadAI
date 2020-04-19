@@ -71,35 +71,6 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
                 .findFragmentById(R.id.google_map);
         supportMapFragment.getMapAsync(this);
         OnPiP();
-
-        geo = new Geocoder(Map.this, Locale.getDefault());
-        FusedLocationProviderClient client = new FusedLocationProviderClient(Map.this);
-        client.getLastLocation()
-                .addOnSuccessListener(new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        if (location!=null) {
-                            latitude2 = location.getLatitude();
-                            longitude2 = location.getLongitude();
-                            try {
-                                if (geo == null)
-                                    geo = new Geocoder(Map.this, Locale.getDefault());
-                                List<Address> address = geo.getFromLocation(latitude,longitude, 1);
-                                if (address.size() > 0) {
-                                }
-                            } catch (IOException ex) {
-                                if (ex != null)
-                                    Toast.makeText(Map.this, "Error:" + ex.getMessage().toString(), Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(Map.this, "Location Fetching failed", Toast.LENGTH_SHORT).show();
-                    }
-                });
     }
 
 
@@ -132,7 +103,6 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
                 {
                     GpsLatLon gps = distressList.get(i).getGps();
                     String distress = distressList.get(i).getDistress();
-                    latLng2 = new LatLng(latitude2,longitude2);
                     latitude = gps.getLat();
                     longitude = gps.getLon();
                     latLng = new LatLng(latitude, longitude);
@@ -144,11 +114,6 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
                         mMap.addMarker(new MarkerOptions().position(latLng).title("").icon(bitmapDescriptor(Map.this,R.drawable.ic_circle_patches)));
                     else if (distress.equals("ravelling"))
                         mMap.addMarker(new MarkerOptions().position(latLng).title("").icon(bitmapDescriptor(Map.this,R.drawable.ic_circle_ravelling)));
-
-                    mMap.addMarker(new MarkerOptions().position(latLng2).title(""));
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng2));
-                    mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng2));
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng2, 12));
                 }
         });
     };
@@ -162,6 +127,26 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
 
         mMap = googleMap;
+        geo = new Geocoder(Map.this, Locale.getDefault());
+        GpsLocation gpsLocation = new GpsLocation(Map.this);
+        if (gpsLocation!=null) {
+            latitude2 = gpsLocation.getLatitude();
+            longitude2 = gpsLocation.getLongitude();
+        }
+
+        try {
+            if (geo == null)
+                geo = new Geocoder(Map.this, Locale.getDefault());
+            List<Address> address = geo.getFromLocation(latitude2,longitude2, 1);
+            latLng2 = new LatLng(latitude2,longitude2);
+            mMap.addMarker(new MarkerOptions().position(latLng2).title(address.get(0).getAddressLine(0)));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng2));
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng2));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng2, 15));
+        } catch (IOException ex) {
+            if (ex != null)
+                Toast.makeText(Map.this, "Error:" + ex.getMessage().toString(), Toast.LENGTH_LONG).show();
+        }
         if (mainstore!=null && mMap!=null)
         {
             mainstore.getConnection().getSocket().on("MAP_RESPONSE", onMapResponse);

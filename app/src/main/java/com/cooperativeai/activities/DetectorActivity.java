@@ -128,6 +128,7 @@ class DetectorActivity {
 
     public void sendtoDistressServer(final Classifier.Recognition result)
     {
+        GpsLocation gpsLocation = new GpsLocation(context);
         System.out.println("New Distress found");
         new Thread(() -> {
             int severity = 0;
@@ -135,7 +136,7 @@ class DetectorActivity {
             final double classScore=result.getConfidence()*100;
             final RectF location = result.getLocation();
             BoundingBox boundingbox= new BoundingBox(location.left, location.top, location.right, location.bottom);
-            GpsLatLon gps = new GpsLatLon(latitude,longitude);
+            GpsLatLon gps = new GpsLatLon(gpsLocation.getLatitude(),gpsLocation.getLongitude());
             System.out.println("socketid2:" + gps.getLat() + " " + gps.getLon());
             MS.mainStore.addDistress(new Distress(gps, distress, severity, classScore, boundingbox));
         }).start();
@@ -166,25 +167,6 @@ class DetectorActivity {
         final long startTime = SystemClock.uptimeMillis();
         final List<Classifier.Recognition> results = detector.recognizeImage(croppedBitmap);
         lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
-
-        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        FusedLocationProviderClient client = new FusedLocationProviderClient(context);
-        client.getLastLocation()
-                .addOnSuccessListener(new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        if (location!=null) {
-                            latitude = location.getLatitude();
-                            longitude = location.getLongitude();
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(context, "Location Fetching failed", Toast.LENGTH_SHORT).show();
-                    }
-                });
         float minimumConfidence = MINIMUM_CONFIDENCE_TF_OD_API;
         switch (MODE) {
             case TF_OD_API:

@@ -45,25 +45,17 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.cooperativeai.R;
-import com.cooperativeai.communication.SocketConnection;
 import com.cooperativeai.statemanagement.MS;
 import com.cooperativeai.statemanagement.MainStore;
 import com.cooperativeai.utils.Constants;
 import com.cooperativeai.utils.DatabasePreferenceManager;
 import com.cooperativeai.utils.SharedPreferenceManager;
 import com.cooperativeai.utils.UtilityMethods;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.kwabenaberko.openweathermaplib.models.common.Main;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -250,31 +242,23 @@ public class CameraActivity extends AppCompatActivity {
             builder.show();
         }
 
-
-
         // For Update gps in every 10 sec
-        FusedLocationProviderClient client = new FusedLocationProviderClient(CameraActivity.this);
-        client.getLastLocation()
-                .addOnSuccessListener(location -> {
-                    if (location!=null) {
-                        lat = location.getLatitude();
-                        lon = location.getLongitude();
+        GpsLocation gpsLocation = new GpsLocation(CameraActivity.this);
+        if (gpsLocation!=null)
+        {
+            lat = gpsLocation.getLatitude();
+            lon = gpsLocation.getLongitude();
+            TimerTask timerTask2 = new TimerTask() {
+                @Override
+                public void run() {
+                    if(mainstore != null){
+                        mainstore.updateGps(lat,lon);
                     }
-                })
-                .addOnFailureListener(e -> Toast.makeText(CameraActivity.this, "Location Fetching failed", Toast.LENGTH_SHORT).show());
-
-        TimerTask timerTask2 = new TimerTask() {
-            @Override
-            public void run() {
-                if(mainstore != null){
-                    mainstore.updateGps(lat,lon);
                 }
-            }
-        };
-        timer2 = new Timer();
-        timer2.scheduleAtFixedRate(timerTask2, 1, 10000);
-
-
+            };
+            timer2 = new Timer();
+            timer2.scheduleAtFixedRate(timerTask2, 1, 10000);
+        }
     }
 
     private void startAutoCapture()

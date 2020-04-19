@@ -111,6 +111,15 @@
     <dimen name="headerlayout1height">300dp</dimen>
     <dimen name="headerimageviewheightnwidth">200dp</dimen>
     <dimen name="headerimageviewmargin">10dp</dimen>
-    <!-- for slide layout -->
     <!-- for profile fragment -->
+    <dimen name="profilelayout1paddingbottom">10dp</dimen>
+    <dimen name="profilelayout2padding">20dp</dimen>
+    <dimen name="profilelayout3margintop">10dp</dimen>
+    <dimen name="profilecircleimageheightnwidth">110dp</dimen>
+    <dimen name="profilecircleimagemarginright">3.5dp</dimen>
+    <dimen name="profileimagebuttonmarginright">10dp</dimen>
+    <dimen name="profiletextview1textsize">25sp</dimen>
+    <dimen name="profiletextview1margintop">15dp</dimen>
+
+    <!-- for slide layout -->
 </resources>
