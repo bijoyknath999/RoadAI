@@ -130,6 +130,8 @@ public final class MainStore{
                     distress.getGps().getLon(),
                     results);
 
+            System.out.println("The distance b/w:" + results[0]);
+
             if(results[0] < Constants.NEW_DISTRESS_THRESHOLD){
                 if (d.getDistress().equals(distress.getDistress())){
                     System.out.println("In distress check");
@@ -138,7 +140,6 @@ public final class MainStore{
                         newClassScore = distress.getClassScore();
                         newSeverity = distress.getSeverity();
                         toUpdate = true;
-                        isPresent = true;
                         old = d;
                         break;
                     }
