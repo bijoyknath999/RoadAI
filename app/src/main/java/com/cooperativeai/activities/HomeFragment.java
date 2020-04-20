@@ -66,6 +66,9 @@ public class HomeFragment extends Fragment {
         if (UtilityMethods.isInternetAvailable())
         {
 
+            if (!lastUsedDateAsString.isEmpty())
+                SaveInDatabase();
+
             if (lastUsedDateAsString.isEmpty())
                 lastUsedDateAsString = currentDateAsString;
             lastUsedDate = DateTimeManager.convertStringToDate(lastUsedDateAsString);
@@ -79,8 +82,7 @@ public class HomeFragment extends Fragment {
                 ConvertCoinToWalletSaveLastUsedDateSaveLevel();
                 IcreaseGoalAndSaveData();
             }
-            if (!lastUsedDateAsString.isEmpty())
-                SaveInDatabase();
+
         }
         else
         {
@@ -184,13 +186,15 @@ public class HomeFragment extends Fragment {
         Usermap.put("Wallet",SharedPreferenceManager.getUserWallet(getActivity()));
         Usermap.put("Goalcheck",SharedPreferenceManager.getUserGoalCheck(getActivity()));
         UsersDatabaseRef.child(firebaseAuth.getCurrentUser().getUid()).updateChildren(Usermap);
-
-
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        SaveInDatabase();
+        if (firebaseAuth.getCurrentUser() != null)
+        {
+            if (!lastUsedDateAsString.isEmpty())
+                SaveInDatabase();
+        }
     }
 }

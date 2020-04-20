@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- for about us-->
+    <dimen name="aboutuspadding">20dp</dimen>
+    <dimen name="aboutustextview1textsize">30sp</dimen>
+    <dimen name="aboutusimageviewwidth">200sp</dimen>
+    <dimen name="aboutusimageviewmargin">15sp</dimen>
+    <dimen name="aboutustextview2textsize">20sp</dimen>
     <!-- for camera activity -->
     <dimen name="camlayout1marginbottom">50dp</dimen>
     <dimen name="camtextsize1">18sp</dimen>
@@ -47,6 +53,7 @@
     <dimen name="registerlayout2margintop">60dp</dimen>
     <dimen name="registerpasscircleimageheightnwidth">150dp</dimen>
     <dimen name="registeralltextinputpaddingmargin">10dp</dimen>
+    <dimen name="registeralltextinputtextsize">20sp</dimen>
     <dimen name="registerbuttonpaddingmargin">10dp</dimen>
     <dimen name="registerbuttontextsize">20sp</dimen>
     <dimen name="registerlayout3margintop">10dp</dimen>
@@ -59,6 +66,7 @@
     <dimen name="setuplayout2margintop">100dp</dimen>
     <dimen name="setuppasscircleimageheightnwidth">150dp</dimen>
     <dimen name="setupalltextinputpaddingmargin">10dp</dimen>
+    <dimen name="setupalltextinputtextsize">20sp</dimen>
     <dimen name="setupbuttonpaddingmargin">10dp</dimen>
     <dimen name="setupbuttontextsize">20sp</dimen>
     <dimen name="setupbutton2paddingmargin">10dp</dimen>
@@ -71,8 +79,8 @@
     <!-- for welcome page -->
     <dimen name="welcomecircleimageheightnwidth">150dp</dimen>
     <dimen name="welcomecircleimagemarginbottom">20dp</dimen>
-    <dimen name="welcometextview1textsize">30dp</dimen>
-    <dimen name="welcometextview2textsize">18dp</dimen>
+    <dimen name="welcometextview1textsize">30sp</dimen>
+    <dimen name="welcometextview2textsize">18sp</dimen>
     <dimen name="welcomealltextviewmargin">5dp</dimen>
     <dimen name="welcomeallbuttonmargin">8dp</dimen>
     <!-- for dialog box-->
@@ -102,7 +110,9 @@
     <dimen name="logincircleimageheightnwidth">110dp</dimen>
     <dimen name="logincircleimagemargintopbottom">20dp</dimen>
     <dimen name="loginalltextinputpaddingmargin">10dp</dimen>
-    <dimen name="logincheckboxpaddingmargin">10dp</dimen>
+    <dimen name="loginalltextinputtextsize">20sp</dimen>
+    <dimen name="logincheckboxpadding">10dp</dimen>
+    <dimen name="logincheckboxmargin">10dp</dimen>
     <dimen name="loginalltextviewtextsize">14sp</dimen>
     <dimen name="logintextview3marginright">10dp</dimen>
     <dimen name="loginbuttonpaddingmargin">10dp</dimen>
@@ -117,6 +127,7 @@
     <dimen name="profilelayout3margintop">10dp</dimen>
     <dimen name="profilecircleimageheightnwidth">110dp</dimen>
     <dimen name="profilecircleimagemarginright">3.5dp</dimen>
+    <dimen name="profileimagebuttonheightnwidtht">30dp</dimen>
     <dimen name="profileimagebuttonmarginright">10dp</dimen>
     <dimen name="profiletextview1textsize">25sp</dimen>
     <dimen name="profiletextview1margintop">15dp</dimen>

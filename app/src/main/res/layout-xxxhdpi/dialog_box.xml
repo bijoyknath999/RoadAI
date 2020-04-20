@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:gravity="center">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/color3"
+        app:cardCornerRadius="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:layout_height="100dp"
+            android:text="No internet connection"
+            android:textColor="@color/color1"
+            android:gravity="center"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:drawableLeft="@drawable/ic_error"
+            android:background="@color/color3"
+            android:drawablePadding="15dp"/>
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

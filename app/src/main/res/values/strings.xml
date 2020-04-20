@@ -7,11 +7,12 @@
     <string name="coins_per_1m">Coins per 1m</string>
     <string name="current_user_level">current user level</string>
     <string name="coins_earned_today">Coins earned today</string>
-    <string name="welcome_page_txt">Road.Ai is world\'s first real-time road condition \nmonitoring app based on artificial inteligence. \nSo let\'s get started, if you are a new user signup, it\'s free!</string>
+    <string name="welcome_page_txt">Road.Ai is world\'s first real-time road condition monitoring app based on artificial inteligence. \nSo let\'s get started, if you are a new user signup, it\'s free!</string>
     <string name="let_s_go">Let\'s Go</string>
     <string name="openweatherapi">042b832fea72efc6ef580c6316efaf78</string>
     <string name="drawer_open">Open Navigation Drawer</string>
     <string name="drawer_close">Close Navigation Drawer</string>
     <string name="google_map_api">AIzaSyBoMNTCydpfwqE9cPvAa3rIFP1Uuxwl4-s</string>
+    <string name="aboutustext">RoadAI is the world\'s first social media app that allows you to have real-time road condition/road distress updates from crowd sourced data.\nEquipped with state of the art AI engine it automatically detects road distresses.\nThe coin system let\'s you earn while travelling which can be redeemed in the marketplace. Level up your detection game,\ninvite your friends, build a community.</string>
 
 </resources>

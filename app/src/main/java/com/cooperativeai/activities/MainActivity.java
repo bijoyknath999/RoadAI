@@ -14,11 +14,16 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -270,15 +275,72 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
     {
         switch (menuItem.getItemId())
         {
+            case R.id.menu_market_place:
+                Toast.makeText(MainActivity.this,"Coming soon",Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.menu_about_us:
+                showdialog();
+                break;
+            case R.id.menu_follow_us:
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/roadai1")));
+                break;
             case R.id.menu_logout:
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(MainActivity.this,WelcomePage.class));
-                overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
-                finish();
+                logout();
                 break;
         }
 
     }
+
+    private void logout()
+    {
+        FirebaseAuth.getInstance().signOut();
+        SharedPreferences sharedPreferences = getSharedPreferences(Constants.PREFS_FILE_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove(Constants.PREFS_USER_NAME);
+        editor.remove(Constants.PREFS_USER_USERNAME);
+        editor.remove(Constants.PREFS_USER_ID);
+        editor.remove(Constants.PREFS_USER_COIN_COUNT);
+        editor.remove(Constants.PREFS_USER_WALLET);
+        editor.remove(Constants.PREFS_USER_TOTAL_PICTURES);
+        editor.remove(Constants.PREFS_USER_GOAL_CHECK);
+        editor.remove(Constants.PREFS_USER_LAST_ACCESSED);
+        editor.remove(Constants.PREFS_USER_CURRENT_LEVEL);
+        String remembercheck = SharedPreferenceManager.getSignRemember(MainActivity.this);
+        if (remembercheck.equals("no"))
+        {
+            editor.remove(Constants.PREFS_SIGN_IN_REMEMBER);
+            editor.remove(Constants.PREFS_USER_EMAIL);
+            editor.remove(Constants.PREFS_USER_PASSWORD);
+        }
+        editor.commit();
+        startActivity(new Intent(MainActivity.this,WelcomePage.class));
+        overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
+        finish();
+    }
+
+    private void showdialog()
+    {
+        AlertDialog.Builder alertdialog;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
+            alertdialog = new AlertDialog.Builder(this,android.R.style.Theme_DeviceDefault_Dialog_Alert);
+        }
+        else
+        {
+            alertdialog = new AlertDialog.Builder(this);
+        }
+
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.about_us,null);
+
+        alertdialog.setView(view);
+        alertdialog.setCancelable(true);
+        AlertDialog dialog2 = alertdialog.create();
+        dialog2.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        dialog2.show();
+
+    }
+
     //Get Location Permission
     private void getPermission(String writePermission) {
 

@@ -349,7 +349,7 @@ public class WelcomePage extends AppCompatActivity {
                             editor.putString(Constants.PREFS_SIGN_IN_REMEMBER,"no");
                             editor.putString(Constants.PREFS_USER_PASSWORD,"");
                         }
-                        editor.apply();
+                        editor.commit();
 
 
                     }
@@ -379,11 +379,11 @@ public class WelcomePage extends AppCompatActivity {
     {
         String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        UsersDatabaseRef.child(firebaseAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+        UsersDatabaseRef.child(UID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot)
             {
-                if (dataSnapshot.exists())
+                if (dataSnapshot.exists() && !databaseList().equals(null))
                 {
                     fullname = dataSnapshot.child("Fullname").getValue().toString();
                     username = dataSnapshot.child("Username").getValue().toString();
@@ -414,8 +414,8 @@ public class WelcomePage extends AppCompatActivity {
                         editor.putString(Constants.PREFS_SIGN_IN_REMEMBER,"no");
                         editor.putString(Constants.PREFS_USER_PASSWORD,"");
                     }
-                    SharedPreferenceManager.setUserLevel(WelcomePage.this,level);
                     editor.commit();
+                    SharedPreferenceManager.setUserLevel(WelcomePage.this,level);
                 }
             }
 

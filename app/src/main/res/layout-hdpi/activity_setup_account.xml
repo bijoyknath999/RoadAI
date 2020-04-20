@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color4"
-    tools:context=".activities.RegistrationActivity">
+    tools:context=".activities.SetupAccount">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -18,18 +18,19 @@
             android:layout_height="match_parent"
             android:paddingBottom="20dp">
 
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginBottom="40dp"
-                android:layout_marginTop="60dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="30dp"
                 android:id="@+id/sign_up_layout_1">
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/welcome_image_1"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
                     android:src="@drawable/roadai2"
                     app:civ_border_color="@color/TransparentWhite"
                     android:layout_gravity="center"
@@ -47,10 +48,10 @@
                 android:layout_below="@+id/sign_up_layout_1">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edittextfullname"
+                    android:id="@+id/setupfullname"
                     android:padding="10dp"
                     android:layout_margin="10dp"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Full name"
@@ -59,10 +60,10 @@
 
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edittextusername"
+                    android:id="@+id/setupusername"
                     android:padding="10dp"
                     android:layout_margin="10dp"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Username"
@@ -72,74 +73,40 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:padding="10dp"
                     android:layout_margin="10dp"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:background="@drawable/signuppage_custom_box"
-                    android:id="@+id/edittextemail"
+                    android:id="@+id/setupemail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Email"
                     android:inputType="textEmailAddress"/>
 
-                <com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText
-                    android:id="@+id/edittextpassword"
-                    android:padding="10dp"
-                    android:layout_margin="10dp"
-                    android:textSize="20sp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Password"
-                    android:inputType="textPassword"
-                    android:background="@drawable/signuppage_custom_box"/>
-
-                <com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText
-                    android:id="@+id/edittextconfirmpassword"
-                    android:padding="10dp"
-                    android:layout_margin="10dp"
-                    android:textSize="20sp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Confirm Password"
-                    android:inputType="textPassword"
-                    android:background="@drawable/signuppage_custom_box" />
 
                 <Button
-                    android:id="@+id/signupbtn"
+                    android:id="@+id/savebtn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Sign Up"
+                    android:text="Save data"
                     android:padding="10dp"
                     android:layout_margin="10dp"
                     android:layout_alignParentBottom="true"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textAllCaps="false"
                     android:textColor="@color/color1"
                     android:background="@drawable/slide_custom_btn"/>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <Button
+                    android:id="@+id/signoutbtn"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_horizontal"
-                    android:layout_marginTop="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Already have an account?"
-                        android:textSize="18sp"
-                        android:textColor="@color/color2"/>
-
-                    <TextView
-                        android:id="@+id/already_signinbtn"
-                        android:layout_marginLeft="10dp"
-                        android:layout_below="@+id/signupbtn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textStyle="bold"
-                        android:text="Sign In!"
-                        android:textSize="20sp"
-                        android:textColor="@color/color2"/>
-                </LinearLayout>
+                    android:text="Sign Out"
+                    android:padding="10dp"
+                    android:layout_margin="10dp"
+                    android:layout_alignParentBottom="true"
+                    android:textSize="18sp"
+                    android:textAllCaps="false"
+                    android:textColor="@color/color1"
+                    android:background="@drawable/slide_custom_btn"/>
 
             </LinearLayout>
 

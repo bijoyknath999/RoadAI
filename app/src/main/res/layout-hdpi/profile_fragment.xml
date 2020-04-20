@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding="20dp"
+            android:padding="10dp"
             android:background="@color/color1">
 
             <LinearLayout
@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:weightSum="3"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="5dp">
 
                 <RelativeLayout
                     android:layout_width="0dp"
@@ -33,13 +33,13 @@
                     android:layout_height="wrap_content"
                     android:gravity="right">
                     <de.hdodenhof.circleimageview.CircleImageView
-                        android:layout_width="110dp"
-                        android:layout_height="110dp"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
                         android:src="@drawable/smiley"
                         app:civ_circle_background_color="@color/color3"
                         app:civ_border_color="@color/colorAccent"
                         app:civ_border_width="2dp"
-                        android:layout_marginRight="3.5dp"/>
+                        android:layout_marginRight="8.5dp"/>
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -49,12 +49,12 @@
                     android:gravity="right">
 
                     <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         android:id="@+id/profile_edit"
-                        android:src="@drawable/ic_edit"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="10dp"
                         android:background="@color/color1"
-                        android:layout_marginRight="10dp"/>
+                        android:src="@drawable/ic_edit" />
                 </RelativeLayout>
 
             </LinearLayout>
@@ -65,8 +65,8 @@
                 android:id="@+id/profile_fullname"
                 android:text=""
                 android:textAlignment="center"
-                android:textSize="25sp"
-                android:layout_marginTop="15dp"
+                android:textSize="20sp"
+                android:layout_marginTop="10dp"
                 android:textColor="@color/color2"/>
 
             <TextView
@@ -74,7 +74,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/profile_current_location"
                 android:text=""
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:layout_marginTop="10dp"
                 android:drawablePadding="15dp"
                 android:drawableLeft="@drawable/ic_location_profile"/>
@@ -91,9 +91,9 @@
                     android:text=""
                     android:textStyle="bold"
                     android:textColor="@color/color2"
-                    android:textSize="25sp"
+                    android:textSize="20sp"
                     android:textAlignment="center"
-                    android:layout_marginTop="25dp"/>
+                    android:layout_marginTop="15dp"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -101,7 +101,7 @@
                     android:text="Current Level"
                     android:textStyle="normal"
                     android:textColor="@color/color2"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textAlignment="center"
                     android:layout_marginTop="5dp"/>
 
@@ -114,11 +114,11 @@
             android:layout_height="wrap_content"
             android:text="Travelling Histroy"
             android:textColor="@color/color2"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:textStyle="bold"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="5dp"
             android:padding="5dp"/>
 
         <androidx.cardview.widget.CardView
@@ -137,10 +137,10 @@
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
                         android:src="@drawable/ic_total_pic"
-                        android:layout_margin="20dp"/>
+                        android:layout_margin="10dp"/>
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -152,14 +152,14 @@
                             android:layout_height="wrap_content"
                             android:text="Total pictures collected"
                             android:textAlignment="center"
-                            android:textSize="18sp"
+                            android:textSize="16sp"
                             android:textStyle="normal"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:id="@+id/profile_total_pictures"
                             android:text="2082"
-                            android:textSize="22sp"
+                            android:textSize="20sp"
                             android:layout_marginTop="5dp"
                             android:textColor="@color/color2"/>
                     </LinearLayout>
@@ -169,11 +169,11 @@
                         android:layout_height="match_parent"
                         android:gravity="right">
                         <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:src="@drawable/ic_arrow"
                             android:layout_centerVertical="true"
-                            android:layout_margin="20dp"/>
+                            android:layout_margin="10dp"/>
 
                     </RelativeLayout>
                 </LinearLayout>
@@ -188,11 +188,11 @@
             android:layout_height="wrap_content"
             android:text="Road.Ai Wallet"
             android:textColor="@color/color2"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:textStyle="bold"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="5dp"
             android:padding="5dp"/>
 
         <androidx.cardview.widget.CardView
@@ -211,10 +211,10 @@
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
                         android:src="@drawable/ic_coins"
-                        android:layout_margin="20dp"/>
+                        android:layout_margin="10dp"/>
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -226,7 +226,7 @@
                             android:layout_height="wrap_content"
                             android:text="Total Coins"
                             android:textAlignment="center"
-                            android:textSize="18sp"
+                            android:textSize="16sp"
                             android:textStyle="normal"/>
                         <TextView
                             android:layout_width="wrap_content"
@@ -234,7 +234,7 @@
                             android:id="@+id/profile_total_coins"
                             android:layout_marginTop="5dp"
                             android:text="5000"
-                            android:textSize="22sp"
+                            android:textSize="20sp"
                             android:textColor="@color/color2"/>
                     </LinearLayout>
 
@@ -243,11 +243,11 @@
                         android:layout_height="match_parent"
                         android:gravity="right">
                         <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:src="@drawable/ic_arrow"
                             android:layout_centerVertical="true"
-                            android:layout_margin="20dp"/>
+                            android:layout_margin="10dp"/>
 
                     </RelativeLayout>
                 </LinearLayout>
