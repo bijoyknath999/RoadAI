@@ -137,7 +137,7 @@ class DetectorActivity {
             final RectF location = result.getLocation();
             BoundingBox boundingbox= new BoundingBox(location.left, location.top, location.right, location.bottom);
             GpsLatLon gps = new GpsLatLon(gpsLocation.getLatitude(),gpsLocation.getLongitude());
-            System.out.println("socketid2:" + gps.getLat() + " " + gps.getLon());
+            //System.out.println("socketid2:" + gps.getLat() + " " + gps.getLon());
             MS.mainStore.addDistress(new Distress(gps, distress, severity, classScore, boundingbox));
         }).start();
         //mainStore.addDistress(new Distress(gps, distress, severity, classScore, boundingbox));
