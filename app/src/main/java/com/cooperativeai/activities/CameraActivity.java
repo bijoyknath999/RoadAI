@@ -403,16 +403,22 @@ public class CameraActivity extends AppCompatActivity {
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 hasCameraPermission = true;
+                startActivity(new Intent(CameraActivity.this,CameraActivity.class));
             }
-        } else if (requestCode == WRITE_REQUEST_CODE) {
+        }
+        else if (requestCode == WRITE_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 hasWritePermission = true;
             }
-            else if (requestCode == LOCATION_REQUEST_CODE){
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    hasLocationPermission = true;
-                }
+        }
+        else if (requestCode == LOCATION_REQUEST_CODE){
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                hasLocationPermission = true;
             }
+        }
+        else
+        {
+            onBackPressed();
         }
     }
 

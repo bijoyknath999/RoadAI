@@ -1,5 +1,6 @@
 package com.cooperativeai.activities;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -8,16 +9,24 @@ import android.app.ActionBar;
 import android.app.PictureInPictureParams;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.Rational;
 import android.view.Display;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.cooperativeai.R;
@@ -59,6 +68,9 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
     private Context context;
     MainStore mainstore = MS.mainStore;
     MarkerOptions markerOptions;
+    private static final String TAG = "Map";
+    private Bitmap pothole,crack,patche,ravelling;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,14 +118,24 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
                     latitude = gps.getLat();
                     longitude = gps.getLon();
                     latLng = new LatLng(latitude, longitude);
+                    Bitmap bitmap;
                     if (distress.equals("pothole"))
-                        mMap.addMarker(new MarkerOptions().position(latLng).title("").icon(bitmapDescriptor(Map.this,R.drawable.ic_circle_pothole)));
+                    {
+                        bitmap = getMarkerBitmapFromView(R.drawable.ic_circle_pothole);;
+                    }
                     else if (distress.equals("crack"))
-                        mMap.addMarker(new MarkerOptions().position(latLng).title("").icon(bitmapDescriptor(Map.this,R.drawable.ic_circle_cracks)));
-                    else if (distress.equals("patche"))
-                        mMap.addMarker(new MarkerOptions().position(latLng).title("").icon(bitmapDescriptor(Map.this,R.drawable.ic_circle_patches)));
+                    {
+                        bitmap = getMarkerBitmapFromView(R.drawable.ic_circle_crack);;
+                    }
                     else if (distress.equals("ravelling"))
-                        mMap.addMarker(new MarkerOptions().position(latLng).title("").icon(bitmapDescriptor(Map.this,R.drawable.ic_circle_ravelling)));
+                    {
+                        bitmap = getMarkerBitmapFromView(R.drawable.ic_circle_ravelling);;
+                    }
+                    else
+                    {
+                        bitmap = getMarkerBitmapFromView(R.drawable.ic_circle_patche);;
+                    }
+                    mMap.addMarker(new MarkerOptions().position(latLng).title("").icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
                 }
         });
     };
@@ -155,14 +177,23 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
 
     }
 
-    private BitmapDescriptor bitmapDescriptor(Context context, int vectorId)
-    {
-        Drawable drawable = ContextCompat.getDrawable(context,vectorId);
-        drawable.setBounds(0,0,drawable.getIntrinsicWidth(),drawable.getIntrinsicHeight());
-        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),drawable.getIntrinsicHeight(),Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        drawable.draw(canvas);
-        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    private Bitmap getMarkerBitmapFromView(@DrawableRes int resId) {
+
+        View customMarkerView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.view_custom_marker, null);
+        ImageView markerImageView = (ImageView) customMarkerView.findViewById(R.id.profile_image);
+        markerImageView.setImageResource(resId);
+        customMarkerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        customMarkerView.layout(0, 0, customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight());
+        customMarkerView.buildDrawingCache();
+        Bitmap returnedBitmap = Bitmap.createBitmap(customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight(),
+                Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(returnedBitmap);
+        canvas.drawColor(Color.WHITE, PorterDuff.Mode.SRC_IN);
+        Drawable drawable = customMarkerView.getBackground();
+        if (drawable != null)
+            drawable.draw(canvas);
+        customMarkerView.draw(canvas);
+        return returnedBitmap;
     }
 
 
@@ -187,7 +218,6 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         OnPiP();
     }
 }
