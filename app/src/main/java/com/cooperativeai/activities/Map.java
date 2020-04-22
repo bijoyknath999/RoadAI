@@ -69,8 +69,7 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
     MainStore mainstore = MS.mainStore;
     MarkerOptions markerOptions;
     private static final String TAG = "Map";
-    private Bitmap pothole,crack,patche,ravelling;
-
+    private GpsLocation gpsLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,14 +77,13 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
         setContentView(R.layout.activity_map);
 
 
+        gpsLocation = new GpsLocation(Map.this);
         actionBar = getActionBar();
         SupportMapFragment supportMapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.google_map);
         supportMapFragment.getMapAsync(this);
         OnPiP();
     }
-
-
 
     private void OnPiP() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -150,11 +148,10 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
 
         mMap = googleMap;
         geo = new Geocoder(Map.this, Locale.getDefault());
-        GpsLocation gpsLocation = new GpsLocation(Map.this);
-        if (gpsLocation!=null) {
-            latitude2 = gpsLocation.getLatitude();
-            longitude2 = gpsLocation.getLongitude();
-        }
+         if (gpsLocation!=null) {
+                latitude2 = gpsLocation.getLatitude();
+                longitude2 = gpsLocation.getLongitude();
+            }
 
         try {
             if (geo == null)
@@ -204,11 +201,11 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
             mainstore.getConnection().getSocket().off("MAP_RESPONSE",onMapResponse);
     }
 
-    @Override
+    /*@Override
     protected void onStart() {
         super.onStart();
         OnPiP();
-    }
+    }*/
 
     @Override
     protected void onPause() {
@@ -218,6 +215,6 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
 
     @Override
     public void onBackPressed() {
-        OnPiP();
+         OnPiP();
     }
 }

@@ -1,17 +1,28 @@
 
 package com.cooperativeai.activities;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.cooperativeai.R;
 import com.cooperativeai.utils.Constants;
@@ -36,7 +47,9 @@ public class SplashActivity extends AppCompatActivity {
     private String email, password, fullname,username,coins,wallet,pictures,lastuseddate,goalcheck;
     private int level;
     private Dialog noconnectionDialog;
-
+    private boolean HasPermission;
+    private LocationManager locationManager;
+    private GpsLocation gpsLocation;
 
     private ColorfulRingProgressView crpv;
 
@@ -44,6 +57,8 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+        gpsLocation = new GpsLocation(SplashActivity.this);
 
 
         //set activity full screen
@@ -55,10 +70,71 @@ public class SplashActivity extends AppCompatActivity {
 
         }
 
+        if (Build.VERSION.SDK_INT>=23)
+        {
+            if (ContextCompat.checkSelfPermission(SplashActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(SplashActivity.this,Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(SplashActivity.this,Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(SplashActivity.this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(SplashActivity.this,Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            {
+                ActivityCompat.requestPermissions(SplashActivity.this,new String[]{Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},1);
+            }
+            else
+            {
+                HasPermission = true;
+            }
+        }
+
         noconnectionDialog = UtilityMethods.showDialogAlert(SplashActivity.this, R.layout.dialog_box);
         UsersDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
         crpv = (ColorfulRingProgressView) findViewById(R.id.crpv);
+        if(HasPermission)
+            if (!gpsLocation.canGetLocation)
+            {
+                gpsLocation.showSettingsAlert();
+            }
+        else
+            {
+                splashScreen();
+            }
+    }
+
+    private void checkgps() {
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        //if gps is on the it will work and get current location either alert box will show up
+        if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Turn on GPS\nSelect High Accuracy");
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    finishAffinity();
+                    dialogInterface.dismiss();
+                }
+            });
+            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i)
+                {
+                    finishAffinity();
+                }
+            });
+            builder.show();
+        }
+        else
+        {
+            splashScreen();
+        }
+    }
+
+    private void splashScreen() {
+
         crpv.animateIndeterminate();
 
         Handler handler = new Handler();
@@ -68,42 +144,42 @@ public class SplashActivity extends AppCompatActivity {
 
                 SharedPreferences sharedPreferences = getSharedPreferences("sharedPreferences", MODE_PRIVATE);
                 final boolean firstTime = sharedPreferences.getBoolean("firstTime", true);
-                if (firstTime)
-                {
-                    Intent IntroIntent = new Intent(SplashActivity.this, Intro.class);
-                    IntroIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(IntroIntent);
-                    finish();
-                    overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
-                }
-                else
+                    if (firstTime)
                     {
-                    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                    if (currentUser == null)
-                    {
-                        SendUserSignInActivity();
+                        Intent IntroIntent = new Intent(SplashActivity.this, Intro.class);
+                        IntroIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(IntroIntent);
+                        finish();
+                        overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
                     }
                     else
                     {
-                        if (UtilityMethods.isInternetAvailable())
+                        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                        if (currentUser == null)
                         {
-                            CheckUserExistence();
+                            SendUserSignInActivity();
                         }
                         else
                         {
-                            noconnectionDialog.show();
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (noconnectionDialog.isShowing())
-                                    {
-                                        noconnectionDialog.dismiss();
+                            if (UtilityMethods.isInternetAvailable())
+                            {
+                                CheckUserExistence();
+                            }
+                            else
+                            {
+                                noconnectionDialog.show();
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (noconnectionDialog.isShowing())
+                                        {
+                                            noconnectionDialog.dismiss();
+                                        }
                                     }
-                                }
-                            },2500);
+                                },2500);
+                            }
                         }
                     }
-                }
             }
         }, 2000);
     }
@@ -202,4 +278,30 @@ public class SplashActivity extends AppCompatActivity {
         finish();
         overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode)
+        {
+            case 1:
+                if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                {
+                    HasPermission = true;
+                    if (!gpsLocation.canGetLocation)
+                    {
+                        gpsLocation.showSettingsAlert();
+                    }
+                    else
+                    {
+                        splashScreen();
+                    }
+                }
+                else
+                {
+                    finishAffinity();
+                }
+        }
+    }
+
 }

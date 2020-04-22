@@ -121,6 +121,7 @@ public class CameraActivity extends AppCompatActivity {
     private Dialog noconnectionDialog;
     private ImageView mapBTN;
     private File storageDirectory;
+    private GpsLocation gpsLocation;
 
 
 
@@ -129,7 +130,9 @@ public class CameraActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
         ButterKnife.bind(this);
-        getPermission(Constants.CAMERA_PERMISSION);
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        gpsLocation = new GpsLocation(CameraActivity.this);
         UsersDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
         firebaseAuth = FirebaseAuth.getInstance();
         noconnectionDialog = UtilityMethods.showDialogAlert(CameraActivity.this, R.layout.dialog_box);
@@ -149,7 +152,25 @@ public class CameraActivity extends AppCompatActivity {
                 });
 
 
-        hasWritePermission = false;
+        if (Build.VERSION.SDK_INT>=23)
+        {
+            if (ContextCompat.checkSelfPermission(CameraActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(CameraActivity.this,Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(CameraActivity.this,Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(CameraActivity.this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(CameraActivity.this,Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            {
+                ActivityCompat.requestPermissions(CameraActivity.this,new String[]{Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},1);
+            }
+            else
+            {
+                hasCameraPermission = true;
+                hasLocationPermission = true;
+                hasWritePermission = true;
+            }
+        }
         wasCreated = false;
 
         final AssetManager mngr =getApplicationContext().getAssets();
@@ -164,8 +185,15 @@ public class CameraActivity extends AppCompatActivity {
         mapBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(CameraActivity.this,Map.class));
-                customType(CameraActivity.this, "fadein-to-fadeout");
+                if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+                {
+                    startActivity(new Intent(CameraActivity.this,Map.class));
+                    customType(CameraActivity.this, "fadein-to-fadeout");
+                }
+                else
+                {
+                    gpsLocation.showSettingsAlert();
+                }
             }
         });
         surfaceTextureListener = new TextureView.SurfaceTextureListener() {
@@ -243,21 +271,27 @@ public class CameraActivity extends AppCompatActivity {
         }
 
         // For Update gps in every 10 sec
-        GpsLocation gpsLocation = new GpsLocation(CameraActivity.this);
-        if (gpsLocation!=null)
+        if (!gpsLocation.canGetLocation)
         {
-            lat = gpsLocation.getLatitude();
-            lon = gpsLocation.getLongitude();
-            TimerTask timerTask2 = new TimerTask() {
-                @Override
-                public void run() {
-                    if(mainstore != null){
-                        mainstore.updateGps(lat,lon);
+            gpsLocation.showSettingsAlert();
+        }
+        else
+        {
+            if (gpsLocation!=null)
+            {
+                lat = gpsLocation.getLatitude();
+                lon = gpsLocation.getLongitude();
+                TimerTask timerTask2 = new TimerTask() {
+                    @Override
+                    public void run() {
+                        if(mainstore != null){
+                            mainstore.updateGps(lat,lon);
+                        }
                     }
-                }
-            };
-            timer2 = new Timer();
-            timer2.scheduleAtFixedRate(timerTask2, 1, 10000);
+                };
+                timer2 = new Timer();
+                timer2.scheduleAtFixedRate(timerTask2, 1, 10000);
+            }
         }
     }
 
@@ -305,7 +339,7 @@ public class CameraActivity extends AppCompatActivity {
                     }, backgroundHandler);
                 }
             } else {
-                getPermission(Constants.WRITE_PERMISSION);
+                Toast.makeText(CameraActivity.this, "Permissions were not granted", Toast.LENGTH_SHORT).show();
             }
         }
         catch (CameraAccessException e) {
@@ -377,48 +411,23 @@ public class CameraActivity extends AppCompatActivity {
         }
     }
 
-    private void getPermission(String writePermission) {
-        if (writePermission.equalsIgnoreCase(Constants.CAMERA_PERMISSION)) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST_CODE);
-            else
-                hasCameraPermission = true;
-        } else if (writePermission.equalsIgnoreCase(Constants.WRITE_PERMISSION)) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_REQUEST_CODE);
-            else
-                hasWritePermission = true;
-        }
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_REQUEST_CODE);
-        else
-            hasLocationPermission = true;
-
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == CAMERA_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                hasCameraPermission = true;
-                startActivity(new Intent(CameraActivity.this,CameraActivity.class));
-            }
-        }
-        else if (requestCode == WRITE_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                hasWritePermission = true;
-            }
-        }
-        else if (requestCode == LOCATION_REQUEST_CODE){
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                hasLocationPermission = true;
-            }
-        }
-        else
+
+        switch (requestCode)
         {
-            onBackPressed();
+            case 1:
+                if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                {
+                    hasWritePermission = true;
+                    hasLocationPermission = true;
+                    hasCameraPermission = true;
+                }
+                else
+                {
+                    finishAffinity();
+                }
         }
     }
 
@@ -443,7 +452,6 @@ public class CameraActivity extends AppCompatActivity {
 
     @OnClick(R.id.button_take_picture)
     public void clickPicture() {
-        getPermission(Constants.WRITE_PERMISSION);
         if (hasWritePermission && hasCameraPermission) {
 
             int level = SharedPreferenceManager.getUserLevel(CameraActivity.this);
@@ -461,7 +469,13 @@ public class CameraActivity extends AppCompatActivity {
             else
             if (UtilityMethods.isInternetAvailable())
             {
-                takePicture();
+                if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    takePicture();
+                }
+                else
+                {
+                    gpsLocation.showSettingsAlert();
+                }
             }
             else {
                 noconnectionDialog.show();
@@ -480,7 +494,6 @@ public class CameraActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    getPermission(Constants.CAMERA_PERMISSION);
                     Toast.makeText(CameraActivity.this, "Permissions were not granted", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -606,6 +619,8 @@ public class CameraActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+            gpsLocation.showSettingsAlert();
         if (!textureView.isAvailable())
             textureView.setSurfaceTextureListener(surfaceTextureListener);
 
@@ -651,8 +666,6 @@ public class CameraActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(new Intent(CameraActivity.this, MainActivity.class));
-        finish();
         overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
     }
 

@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:gravity="center"
-            android:layout_marginBottom="50dp"
+            android:layout_marginBottom="40dp"
             android:orientation="horizontal"
             android:weightSum="3">
 
@@ -33,14 +33,14 @@
                 android:id="@+id/camera_auto_capture"
                 android:text="Auto\nCapture"
                 android:textAlignment="center"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:textColor="@color/color1"
                 android:textStyle="normal"/>
 
             <ImageView
                 android:id="@+id/button_take_picture"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="45dp"
                 app:backgroundTint="@color/colorPrimary"
                 app:elevation="4dp"
                 android:src="@drawable/ic_photo_camera"
@@ -49,7 +49,7 @@
             <ImageView
                 android:id="@+id/button_map"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="45dp"
                 app:backgroundTint="@color/colorPrimary"
                 app:elevation="4dp"
                 android:src="@drawable/ic_map"

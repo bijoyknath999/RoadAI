@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
     private String city,country;
     private LocationManager locationManager;
     private Dialog noconnectionDialog;
+    private GpsLocation gpsLocation;
 
 
 
@@ -88,6 +89,38 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (Build.VERSION.SDK_INT>=29)
+        {
+            if (
+                    ContextCompat.checkSelfPermission(MainActivity.this,Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                            ContextCompat.checkSelfPermission(MainActivity.this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(MainActivity.this,Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            {
+                ActivityCompat.requestPermissions(MainActivity.this,new String[]{
+                        Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},1);
+            }
+            else
+            {
+                hasLocationPermission = true;
+            }
+        }
+        else if (Build.VERSION.SDK_INT>=23)
+        {
+            if (ContextCompat.checkSelfPermission(MainActivity.this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(MainActivity.this,Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            {
+                ActivityCompat.requestPermissions(MainActivity.this,new String[]{
+                        Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},1);
+            }
+            else
+            {
+                hasLocationPermission = true;
+            }
+        }
+
+        gpsLocation = new GpsLocation(MainActivity.this);
 
         //Firebase Database Reference
         UserAcc = FirebaseDatabase.getInstance().getReference().child("Users");
@@ -125,52 +158,25 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
             }
         });
 
-        //Get Location Permission if not
-        getPermission(Constants.LOCATION_PERMISSION);
 
         if (hasLocationPermission)
         {
-
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             @SuppressLint("MissingPermission") Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            //if gps is on the it will work and get current location either alert box will show up
-            if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                onLocationChanged(location);
-                GpsLocation gpsLocation = new GpsLocation(MainActivity.this);
-                latitude = gpsLocation.getLatitude();
-                longitude = gpsLocation.getLongitude();
+            if (!gpsLocation.canGetLocation)
+            {
+                gpsLocation.showSettingsAlert();
             }
             else
             {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Turn on GPS\nSelect High Accuracy");
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                        finishAffinity();
-                        dialogInterface.dismiss();
-                    }
-                });
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i)
-                    {
-                        finishAffinity();
-                    }
-                });
-                builder.show();
+                onLocationChanged(location);
+                latitude = gpsLocation.getLatitude();
+                longitude = gpsLocation.getLongitude();
             }
-
         }
         else
         {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(MainActivity.this, "Permissions were not granted", Toast.LENGTH_SHORT).show();
-                }
-            });
+            Toast.makeText(MainActivity.this, "Permissions were not granted", Toast.LENGTH_SHORT).show();
         }
 
         //Using Open Weather it's getting current location temperature
@@ -194,12 +200,17 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
         spaceNavigationView.setSpaceOnClickListener(new SpaceOnClickListener() {
             @Override
             public void onCentreButtonClick() {
-
-                Intent CamIntent = new Intent(MainActivity.this, CameraActivity.class);
-                CamIntent.putExtra("lat",latitude);
-                CamIntent.putExtra("lon",longitude);
-                startActivity(CamIntent);
-                overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
+                if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    Intent CamIntent = new Intent(MainActivity.this, CameraActivity.class);
+                    CamIntent.putExtra("lat", latitude);
+                    CamIntent.putExtra("lon", longitude);
+                    startActivity(CamIntent);
+                    overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit);
+                }
+                else
+                {
+                    gpsLocation.showSettingsAlert();
+                }
 
             }
 
@@ -341,32 +352,23 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
 
     }
 
-    //Get Location Permission
-    private void getPermission(String writePermission) {
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_REQUEST_CODE);
-        else
-            hasLocationPermission = true;
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == LOCATION_REQUEST_CODE){
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                hasLocationPermission = true;
-                startActivity(new Intent(MainActivity.this,MainActivity.class));
-
-            }
-            else
-            {
-                finishAffinity();
-            }
+        switch (requestCode)
+        {
+            case 1:
+                if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                {
+                    hasLocationPermission = true;
+                }
+                else
+                {
+                    finishAffinity();
+                }
         }
     }
-
     @Override
     public void onLocationChanged(Location location) {
         if (location!=null) {
@@ -429,5 +431,12 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+            gpsLocation.showSettingsAlert();
     }
 }

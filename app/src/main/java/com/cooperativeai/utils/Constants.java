@@ -14,7 +14,7 @@ public class Constants {
     public static final String WRITE_PERMISSION = "write_permission";
     public static final String CAMERA_PERMISSION = "camera_permission";
     public static final String LOCATION_PERMISSION = "location_permission";
-    public static final int AUTO_CAPTURE_DELAY = 60000;
+    public static final int AUTO_CAPTURE_DELAY = 10000;
     public static final String PREFS_USER_COIN_COUNT = "user_coins";
     public static final String PREFS_USER_WALLET = "user_wallet";
     public static final String PREFS_USER_GOAL_CHECK = "user_level";

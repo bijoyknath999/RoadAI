@@ -1,15 +1,25 @@
 package com.cooperativeai.activities;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.cooperativeai.R;
+
+import static java.security.AccessController.getContext;
 
 public final class GpsLocation implements LocationListener {
 
@@ -20,6 +30,9 @@ public final class GpsLocation implements LocationListener {
 
     // flag for network status
     boolean isNetworkEnabled = false;
+
+    // flag for GPS status
+    boolean canGetLocation = false;
 
     Location location; // location
     double latitude; // latitude
@@ -85,6 +98,7 @@ public final class GpsLocation implements LocationListener {
                 }
                 // if GPS Enabled get lat/long using GPS Services
                 if (isGPSEnabled) {
+                    this.canGetLocation = true;
                     location=null;
                     if (location == null) {
                         locationManager.requestLocationUpdates(
@@ -107,7 +121,6 @@ public final class GpsLocation implements LocationListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return location;
     }
 
@@ -141,6 +154,62 @@ public final class GpsLocation implements LocationListener {
         }
         // return longitude
         return longitude;
+    }
+
+    /**
+     * Function to check GPS/wifi enabled
+     *
+     * @return boolean
+     * */
+    public boolean canGetLocation() {
+        return this.canGetLocation;
+    }
+
+    /**
+     * Function to show settings alert dialog On pressing Settings button will
+     * lauch Settings Options
+     * */
+    public void showSettingsAlert() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+
+        // Setting Dialog Title
+        alertDialog.setTitle("GPS settings");
+
+        // Setting Dialog Message
+        alertDialog
+                .setMessage("GPS is not enabled. Do you want to go to settings menu?");
+
+        alertDialog.setCancelable(false);
+
+        // On pressing Settings button
+        alertDialog.setPositiveButton("Settings",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(
+                                Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        ((Activity)mContext).finishAffinity();
+                        mContext.startActivity(intent);
+
+                        dialog.dismiss();
+                    }
+                });
+
+        // on pressing cancel button
+        alertDialog.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        Intent intent = ((Activity)mContext).getIntent();
+                        ((Activity)mContext).finish();
+                        ((Activity)mContext).startActivity(intent);
+                        ((Activity)mContext).overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
+
+                        //showSettingsAlert();
+                    }
+                });
+
+        // Showing Alert Message
+        alertDialog.show();
     }
 
     @Override

@@ -368,9 +368,7 @@ public class WelcomePage extends AppCompatActivity {
 
         else
         {
-            dialog.dismiss();
-            Toast.makeText(this,"Please Verify your email first!!",Toast.LENGTH_SHORT).show();
-            FirebaseAuth.getInstance().signOut();
+            SendEmailVerification();
         }
     }
 
@@ -431,6 +429,28 @@ public class WelcomePage extends AppCompatActivity {
         dialog.dismiss();
     }
 
+    private void SendEmailVerification() {
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        FirebaseAuth.getInstance().signOut();
+                        dialog.dismiss();
+                        Toast.makeText(WelcomePage.this, "Please Verify your email first!!\nWe've sent you a verification mail.", Toast.LENGTH_LONG).show();
+                    }
+                    else {
+                        FirebaseAuth.getInstance().signOut();
+                        dialog.dismiss();
+                        String error = task.getException().getMessage();
+                        Toast.makeText(WelcomePage.this, "Error: " + error, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+    }
     @Override
     public void onBackPressed() {
         super.onBackPressed();

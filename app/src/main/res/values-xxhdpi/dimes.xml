@@ -7,10 +7,10 @@
     <dimen name="aboutusimageviewmargin">15sp</dimen>
     <dimen name="aboutustextview2textsize">20sp</dimen>
     <!-- for camera activity -->
-    <dimen name="camlayout1marginbottom">50dp</dimen>
-    <dimen name="camtextsize1">18sp</dimen>
-    <dimen name="camimageview1height">40dp</dimen>
-    <dimen name="camimageview2height">40dp</dimen>
+    <dimen name="camlayout1marginbottom">40dp</dimen>
+    <dimen name="camtextsize1">20sp</dimen>
+    <dimen name="camimageview1height">45dp</dimen>
+    <dimen name="camimageview2height">45dp</dimen>
     <!-- for edit profile -->
     <dimen name="editlayout1marginbottom">40dp</dimen>
     <dimen name="editlayout1margintop">100dp</dimen>
