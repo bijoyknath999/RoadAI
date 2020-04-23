@@ -58,6 +58,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         gpsLocation = new GpsLocation(SplashActivity.this);
 
 
@@ -70,6 +71,7 @@ public class SplashActivity extends AppCompatActivity {
 
         }
 
+        //for checking permission granted or not
         if (Build.VERSION.SDK_INT>=23)
         {
             if (ContextCompat.checkSelfPermission(SplashActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
@@ -93,7 +95,7 @@ public class SplashActivity extends AppCompatActivity {
 
         crpv = (ColorfulRingProgressView) findViewById(R.id.crpv);
         if(HasPermission)
-            if (!gpsLocation.canGetLocation)
+            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
             {
                 gpsLocation.showSettingsAlert();
             }
@@ -101,36 +103,6 @@ public class SplashActivity extends AppCompatActivity {
             {
                 splashScreen();
             }
-    }
-
-    private void checkgps() {
-
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        //if gps is on the it will work and get current location either alert box will show up
-        if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Turn on GPS\nSelect High Accuracy");
-            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                    finishAffinity();
-                    dialogInterface.dismiss();
-                }
-            });
-            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i)
-                {
-                    finishAffinity();
-                }
-            });
-            builder.show();
-        }
-        else
-        {
-            splashScreen();
-        }
     }
 
     private void splashScreen() {
@@ -210,7 +182,6 @@ public class SplashActivity extends AppCompatActivity {
         });
     }
 
-    //Send user to welcomepage
     private void SendUserSignInActivity()
     {
         Intent SignAct = new Intent(SplashActivity.this, WelcomePage.class);
@@ -220,7 +191,6 @@ public class SplashActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
     }
 
-    //Send user to MainActivity and get values from firebase database ,update all SharedPreferences value
     private void SendUserMainActivity()
     {
         String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -269,7 +239,6 @@ public class SplashActivity extends AppCompatActivity {
 
     }
 
-    //Send user to account setup activity
     private void SendUserSetupAccount()
     {
         Intent SetupIntent = new Intent(SplashActivity.this, SetupAccount.class);
@@ -288,7 +257,7 @@ public class SplashActivity extends AppCompatActivity {
                 if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 {
                     HasPermission = true;
-                    if (!gpsLocation.canGetLocation)
+                    if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
                     {
                         gpsLocation.showSettingsAlert();
                     }

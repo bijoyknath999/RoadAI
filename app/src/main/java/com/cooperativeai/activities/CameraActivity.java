@@ -75,10 +75,6 @@ import static maes.tech.intentanim.CustomIntent.customType;
 
 public class CameraActivity extends AppCompatActivity {
 
-    private static final int CAMERA_REQUEST_CODE = 11;
-    private static final int WRITE_REQUEST_CODE = 21;
-    private static final int LOCATION_REQUEST_CODE = 31;
-
     private static final String TAG = "CameraActivity";
 
     @BindView(R.id.textureView_camera_activity)
@@ -104,19 +100,13 @@ public class CameraActivity extends AppCompatActivity {
     private TextView AutoCapture;
     private FirebaseAuth firebaseAuth;
     private DatabaseReference UsersDatabaseRef;
-    private String GoalCheck;
     private boolean hasLocationPermission;
     private DetectorActivity detectorActivity;
-    private Map map;
     private Bitmap image;
     private LocationManager locationManager;
-
     protected int previewWidth = 0;
     protected int previewHeight = 0;
-    private int[] intValues;
-
     protected MainStore mainstore;
-
     private double lattitude,longitude,lat,lon;
     private Dialog noconnectionDialog;
     private ImageView mapBTN;
@@ -150,7 +140,6 @@ public class CameraActivity extends AppCompatActivity {
                         System.out.println("In fireuse token" + task.getException());
                     }
                 });
-
 
         if (Build.VERSION.SDK_INT>=23)
         {
@@ -219,6 +208,7 @@ public class CameraActivity extends AppCompatActivity {
             }
         };
 
+
         AutoCapture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view)
@@ -228,7 +218,7 @@ public class CameraActivity extends AppCompatActivity {
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(CameraActivity.this, "Auto Click Enabled Every 1 minute", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CameraActivity.this, "Auto Click Enabled Every 1 second", Toast.LENGTH_SHORT).show();
                         dialogInterface.dismiss();
                         SharedPreferenceManager.setAutoCaptureStatus(CameraActivity.this, Constants.AUTO_CAPTURE_ON);
                         startAutoCapture();
@@ -254,7 +244,7 @@ public class CameraActivity extends AppCompatActivity {
             builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    Toast.makeText(CameraActivity.this, "Auto Click Enabled Every 1 minute", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CameraActivity.this, "Auto Click Enabled Every 1 second", Toast.LENGTH_SHORT).show();
                     dialogInterface.dismiss();
                     SharedPreferenceManager.setAutoCaptureStatus(CameraActivity.this, Constants.AUTO_CAPTURE_ON);
                     startAutoCapture();
@@ -270,8 +260,7 @@ public class CameraActivity extends AppCompatActivity {
             builder.show();
         }
 
-        // For Update gps in every 10 sec
-        if (!gpsLocation.canGetLocation)
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
         {
             gpsLocation.showSettingsAlert();
         }
@@ -452,42 +441,15 @@ public class CameraActivity extends AppCompatActivity {
 
     @OnClick(R.id.button_take_picture)
     public void clickPicture() {
-        if (hasWritePermission && hasCameraPermission) {
-
-            int level = SharedPreferenceManager.getUserLevel(CameraActivity.this);
-            String coins = SharedPreferenceManager.getUserCoins(CameraActivity.this);
-            if (level == 1 && coins.equals("10.0"))
-                Toast.makeText(CameraActivity.this,"Coin daily limit reached!!",Toast.LENGTH_LONG).show();
-            else if (level == 2 && coins.equals("15.0"))
-                Toast.makeText(CameraActivity.this,"Coin daily limit reached!!",Toast.LENGTH_LONG).show();
-            else if (level == 3 && coins.equals("20.0"))
-                Toast.makeText(CameraActivity.this,"Coin daily limit reached!!",Toast.LENGTH_LONG).show();
-            else if(level == 4 && coins.equals("25.0"))
-                Toast.makeText(CameraActivity.this,"Coin daily limit reached!!",Toast.LENGTH_LONG).show();
-            else if (level == 5 && coins.equals("30.0"))
-                Toast.makeText(CameraActivity.this,"Coin daily limit reached!!",Toast.LENGTH_LONG).show();
-            else
-            if (UtilityMethods.isInternetAvailable())
-            {
-                if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                    takePicture();
-                }
-                else
-                {
-                    gpsLocation.showSettingsAlert();
-                }
+        if (hasWritePermission && hasCameraPermission)
+        {
+            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                takePicture();
             }
-            else {
-                noconnectionDialog.show();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (noconnectionDialog.isShowing())
-                        {
-                            noconnectionDialog.dismiss();
-                        }
-                    }
-                },2500);            }
+            else
+            {
+                gpsLocation.showSettingsAlert();
+            }
         }
         else
         {
@@ -516,9 +478,31 @@ public class CameraActivity extends AppCompatActivity {
                     detectorActivity.detection(image);
                     runOnUiThread(new Runnable() {
                         @Override
-                        public void run() {
-
-                            increaseCoinCount();
+                        public void run()
+                        {
+                            Toast.makeText(CameraActivity.this, "Picture Captured", Toast.LENGTH_SHORT).show();
+                            int level = SharedPreferenceManager.getUserLevel(CameraActivity.this);
+                            String coins = SharedPreferenceManager.getUserCoins(CameraActivity.this);
+                            if (level == 1 && coins.equals("10.0") || level == 2 && coins.equals("15.0") || level == 3 && coins.equals("20.0")
+                                    || level == 4 && coins.equals("25.0") || level == 5 && coins.equals("30.0"))
+                                Log.i(TAG, "Coin daily limit reached!!");
+                          else
+                            if (UtilityMethods.isInternetAvailable())
+                            {
+                                increaseCoinCount();
+                            }
+                            else {
+                                noconnectionDialog.show();
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (noconnectionDialog.isShowing())
+                                        {
+                                            noconnectionDialog.dismiss();
+                                        }
+                                    }
+                                },2500);
+                            }
                         }
                     });
                     Log.i(TAG, "takePicture: " + file.getAbsolutePath());
@@ -544,12 +528,13 @@ public class CameraActivity extends AppCompatActivity {
     private void increaseCoinCount() {
 
         SharedPreferenceManager.changePictureCount(CameraActivity.this,"add",Constants.BASE_PICTURE_CAPTURE_COUNT);
-        Toast.makeText(CameraActivity.this, "Picture Captured", Toast.LENGTH_SHORT).show();
         if (SharedPreferenceManager.changeCoinCount(CameraActivity.this, "add", Constants.BASE_COIN_COUNT)){
 
             String currentCoinCount = SharedPreferenceManager.getUserCoins(CameraActivity.this);
             String currentgoal = SharedPreferenceManager.getUserGoalCheck(CameraActivity.this);
             currentLevel = SharedPreferenceManager.getUserLevel(CameraActivity.this);
+
+            double cointInt = Double.parseDouble(currentCoinCount);
 
             if (currentLevel == 1 && currentCoinCount.equals("10.0") && currentgoal.equals("2"))
                 UpdateGoalUpdateLevel(currentCoinCount,currentgoal,currentLevel);
@@ -560,6 +545,8 @@ public class CameraActivity extends AppCompatActivity {
             else if (currentLevel == 4 && currentCoinCount.equals("25.0") && currentgoal.equals("2"))
                 UpdateGoalUpdateLevel(currentCoinCount,currentgoal,currentLevel);
             else if (currentLevel == 5 && currentCoinCount.equals("30.0") && currentgoal.equals("2"))
+                UpdateGoalUpdateLevel(currentCoinCount,currentgoal,currentLevel);
+            else if (currentLevel == 5 && cointInt > 30.0 && currentgoal.equals("2"))
                 UpdateGoalUpdateLevel(currentCoinCount,currentgoal,currentLevel);
             else
             {

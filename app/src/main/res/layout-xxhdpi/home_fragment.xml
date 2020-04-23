@@ -25,8 +25,8 @@
                 android:background="@color/color5">
 
                 <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="110dp"
-                    android:layout_height="110dp"
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
                     android:src="@drawable/smiley"
                     android:layout_marginTop="10dp"
                     app:civ_circle_background_color="@color/color3"
@@ -39,7 +39,7 @@
                     android:id="@+id/home_username"
                     android:text="Welcome, User"
                     android:textAlignment="center"
-                    android:textSize="25sp"
+                    android:textSize="30sp"
                     android:layout_marginTop="20dp"
                     android:textColor="@color/color1"/>
             </LinearLayout>
@@ -63,8 +63,8 @@
                         android:orientation="horizontal">
 
                         <ImageView
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
+                            android:layout_width="65dp"
+                            android:layout_height="65dp"
                             android:src="@drawable/ic_level"
                             android:layout_margin="10dp"/>
                         <LinearLayout
@@ -78,14 +78,14 @@
                                 android:id="@+id/home_level"
                                 android:text=""
                                 android:textAlignment="center"
-                                android:textSize="25sp"
+                                android:textSize="28sp"
                                 android:textColor="@color/color2"
                                 android:textStyle="normal"/>
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Level"
-                                android:textSize="20sp"
+                                android:textSize="22sp"
                                 android:textColor="@color/color2"/>
                         </LinearLayout>
                     </LinearLayout>
@@ -97,8 +97,8 @@
                         android:orientation="horizontal">
 
                         <ImageView
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
+                            android:layout_width="65dp"
+                            android:layout_height="65dp"
                             android:src="@drawable/ic_coins"
                             android:layout_margin="10dp"/>
                         <LinearLayout
@@ -112,14 +112,14 @@
                                 android:id="@+id/home_coins"
                                 android:text=""
                                 android:textAlignment="center"
-                                android:textSize="25sp"
+                                android:textSize="28sp"
                                 android:textColor="@color/color2"
                                 android:textStyle="normal"/>
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Coins"
-                                android:textSize="20sp"
+                                android:textSize="22sp"
                                 android:textColor="@color/color2"/>
                         </LinearLayout>
                     </LinearLayout>
@@ -132,7 +132,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/color1"
-                android:layout_marginTop="20dp">
+                android:layout_marginTop="25dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -148,8 +148,8 @@
                         android:layout_margin="5dp">
 
                         <ImageView
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
+                            android:layout_width="65dp"
+                            android:layout_height="65dp"
                             android:src="@drawable/ic_clock"
                             android:layout_margin="10dp"/>
 
@@ -158,7 +158,7 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/home_current_date_time"
                             android:text="N/A, N/A"
-                            android:textSize="20sp"
+                            android:textSize="22sp"
                             android:textStyle="normal"
                             android:textColor="@color/color2"
                             android:layout_gravity="center"
@@ -169,11 +169,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_margin="0dp">
+                        android:layout_margin="5dp">
 
                         <ImageView
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
+                            android:layout_width="65dp"
+                            android:layout_height="65dp"
                             android:src="@drawable/ic_location"
                             android:layout_margin="10dp"/>
 
@@ -182,7 +182,7 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/home_current_location"
                             android:text="N/A, N/A"
-                            android:textSize="20sp"
+                            android:textSize="22sp"
                             android:textStyle="normal"
                             android:textColor="@color/color2"
                             android:layout_gravity="center"
@@ -193,11 +193,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_margin="0dp">
+                        android:layout_margin="5dp">
 
                         <ImageView
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
+                            android:layout_width="65dp"
+                            android:layout_height="65dp"
                             android:src="@drawable/ic_weather"
                             android:layout_margin="10dp"/>
 
@@ -206,7 +206,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="00.0° Celsius"
-                            android:textSize="20sp"
+                            android:textSize="22sp"
                             android:textStyle="normal"
                             android:textColor="@color/color2"
                             android:layout_gravity="center"

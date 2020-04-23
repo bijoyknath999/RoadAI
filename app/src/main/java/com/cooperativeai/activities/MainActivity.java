@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
         {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             @SuppressLint("MissingPermission") Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            if (!gpsLocation.canGetLocation)
+            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
             {
                 gpsLocation.showSettingsAlert();
             }
@@ -178,8 +178,6 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
         {
             Toast.makeText(MainActivity.this, "Permissions were not granted", Toast.LENGTH_SHORT).show();
         }
-
-        //Using Open Weather it's getting current location temperature
 
         OpenWeatherMapHelper helper = new OpenWeatherMapHelper(getString(R.string.openweatherapi));
         helper.setUnits(Units.METRIC);
@@ -196,7 +194,6 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
             }
         });
 
-        //Set Click Listener for bottom Navigation
         spaceNavigationView.setSpaceOnClickListener(new SpaceOnClickListener() {
             @Override
             public void onCentreButtonClick() {
@@ -242,11 +239,11 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
         });
 
         //Set Default Fragment Activity
+        if (savedInstanceState == null)
         getSupportFragmentManager().beginTransaction().replace(R.id.home_container,
                 new HomeFragment()).commit();
     }
 
-    //it's getting toolbar menu item
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -255,7 +252,7 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
         return super.onCreateOptionsMenu(menu);
 
     }
-    //It's work when click on toolbar menu item
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
@@ -280,7 +277,7 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
         }
         return super.onOptionsItemSelected(item);
     }
-    //when select drawer menu item then it will work
+
     private void UserMenuSelector(MenuItem menuItem)
 
     {

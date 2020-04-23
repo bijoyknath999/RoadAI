@@ -38,8 +38,6 @@ public class ProfileFragment extends Fragment {
 
         dialog = UtilityMethods.showDialog(getActivity(), R.layout.layout_loading_dialog);
 
-
-        //edit image button click listener
         Edit_Profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -47,10 +45,8 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        //set Toolbar Title
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("Profile");
 
-        //get values from SharedPreference
         ProfileFullname.setText(SharedPreferenceManager.getUserFullName(getContext()));
         ProfileLocation.setText(SharedPreferenceManager.getUserLocation(getContext()));
         ProfileLevel.setText(""+SharedPreferenceManager.getUserLevel(getContext()));
@@ -60,7 +56,6 @@ public class ProfileFragment extends Fragment {
         return view;
     }
 
-    //Send user to edi profile activity
     private void SendUserEditProfile()
     {
         Intent EditProfileintent = new Intent(getContext(), EditProfile.class);

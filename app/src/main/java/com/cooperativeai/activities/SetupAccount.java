@@ -59,11 +59,9 @@ public class SetupAccount extends AppCompatActivity {
         noconnectionDialog = UtilityMethods.showDialogAlert(SetupAccount.this, R.layout.dialog_box);
         dialog = UtilityMethods.showDialog(SetupAccount.this, R.layout.layout_loading_dialog);
 
-        //get user email and set in textview
         getemail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
         Isemail.setText(getemail);
 
-        //Logout Button Click listener
         LogoutBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -89,7 +87,6 @@ public class SetupAccount extends AppCompatActivity {
             }
         });
 
-        //Save button click listener
         SaveBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -130,7 +127,6 @@ public class SetupAccount extends AppCompatActivity {
 
     }
 
-    //Check Username either it is exists in firebase database
     private void CheckUsername()
     {
         Query query = UsersDatabaseRef.orderByChild("Username").equalTo(username);
@@ -155,7 +151,6 @@ public class SetupAccount extends AppCompatActivity {
         });
     }
 
-    //Save user data in firebase and phone also
     private void SaveUserInfo()
     {
 

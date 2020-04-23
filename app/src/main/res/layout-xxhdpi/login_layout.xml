@@ -7,6 +7,10 @@
     android:padding="10dp"
     android:background="@color/color1">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,7 +29,7 @@
             android:layout_width="110dp"
             android:layout_height="110dp"
             android:src="@drawable/roadai2"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="30dp"
             android:layout_marginBottom="20dp"
             app:civ_border_color="@color/TransparentWhite"
             android:layout_gravity="center"
@@ -39,12 +43,14 @@
             android:hint="Email"
             android:layout_margin="10dp"
             android:padding="10dp"
+            android:textSize="22sp"
             android:background="@drawable/loginpage_custom_box" />
 
         <com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText
             android:id="@+id/login_password"
             android:padding="10dp"
             android:layout_margin="10dp"
+            android:textSize="22sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Password"
@@ -60,7 +66,7 @@
                 android:layout_height="wrap_content"
                 android:text="Remember me"
                 android:layout_margin="10dp"
-                android:padding="10dp"
+                android:padding="4dp"
                 android:textSize="14sp"
                 android:textColor="@color/color2"/>
 
@@ -85,7 +91,7 @@
             android:padding="10dp"
             android:layout_margin="10dp"
             android:layout_alignParentBottom="true"
-            android:textSize="20sp"
+            android:textSize="22sp"
             android:textAllCaps="false"
             android:textColor="@color/color1"
             android:background="@drawable/slide_custom_btn"/>
@@ -98,10 +104,12 @@
             android:padding="10dp"
             android:layout_margin="10dp"
             android:layout_alignParentBottom="true"
-            android:textSize="20sp"
+            android:textSize="22sp"
             android:textAllCaps="false"
             android:textColor="@color/color1"
             android:background="@drawable/slide_custom_btn"/>
     </LinearLayout>
+
+    </ScrollView>
 
 </RelativeLayout>

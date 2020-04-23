@@ -1,0 +1,9 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="drawerText" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/color1</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">normal</item>
+
+    </style>
+
+</resources>

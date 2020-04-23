@@ -38,15 +38,15 @@
                     android:text="Welcome, Guest!"
                     android:textAlignment="center"
                     android:textSize="30sp"
-                    android:layout_margin="5dp"/>
+                    android:layout_margin="8dp"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/welcome_page_txt"
                     android:textAlignment="center"
-                    android:textSize="18sp"
+                    android:textSize="20sp"
                     android:textColor="@color/color2"
-                    android:layout_margin="5dp"/>
+                    android:layout_margin="8dp"/>
 
             </LinearLayout>
 

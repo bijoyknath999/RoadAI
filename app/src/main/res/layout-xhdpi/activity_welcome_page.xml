@@ -24,8 +24,8 @@
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/welcome_image_1"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
                     android:src="@drawable/roadai2"
                     app:civ_border_color="@color/colorAccent"
                     android:layout_gravity="center"
@@ -37,7 +37,7 @@
                     android:layout_height="wrap_content"
                     android:text="Welcome, Guest!"
                     android:textAlignment="center"
-                    android:textSize="30sp"
+                    android:textSize="28sp"
                     android:layout_margin="5dp"/>
                 <TextView
                     android:layout_width="match_parent"

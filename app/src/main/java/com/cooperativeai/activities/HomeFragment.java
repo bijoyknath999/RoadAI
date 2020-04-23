@@ -52,10 +52,8 @@ public class HomeFragment extends Fragment {
 
         noconnectionDialog = UtilityMethods.showDialogAlert(getContext(), R.layout.dialog_box);
 
-        //Set Toolbar Title
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("Home");
 
-        //get values from sharedpreference
         lastUsedDateAsString = SharedPreferenceManager.getLastUsedDate(getActivity());
         userCurrentLevel = SharedPreferenceManager.getUserLevel(getActivity());
         CurrentCoins = SharedPreferenceManager.getUserCoins(getActivity());
@@ -97,7 +95,6 @@ public class HomeFragment extends Fragment {
                 }
             },2500);        }
 
-        //set all values in textview which is from SharedPreference
         TextUsername.setText("Welcome, " + SharedPreferenceManager.getUserUsername(getContext()));
         TextCurrentTime.setText(""+DateTimeManager.getMonthNameWithDate());
         TextCoins.setText("" + SharedPreferenceManager.getUserCoins(getActivity()));
@@ -108,10 +105,6 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
-
-    //if last used date not equal to current date and current coins not equal to zero,
-    // then it will convert coins to wallet and set coins value zero
-    //also set last used date and level
     private void ConvertCoinToWalletSaveLastUsedDateSaveLevel()
     {
 
@@ -134,14 +127,12 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    //if user would not use app for 2 days it will make goal value empty
     private void DecreaeseGoal()
     {
         if (UserCurrentGoalCheck.isEmpty() || UserCurrentGoalCheck.equals("1"))
         SharedPreferenceManager.setUserGoalCheck(getActivity(),"");
     }
 
-    //if user using app everyday it will increase goal value 1+
     private void IcreaseGoalAndSaveData()
     {
 
@@ -159,7 +150,6 @@ public class HomeFragment extends Fragment {
 
     }
 
-    //if user not using app for 2< then it will reduce level 1-
     private int reduceLevelCount(){
         if (userCurrentLevel == 1){
             ConvertCoinToWalletSaveLastUsedDateSaveLevel();
@@ -176,7 +166,6 @@ public class HomeFragment extends Fragment {
 
     }
 
-    //get values from SharedPreference and update all values in firebase database
     private void SaveInDatabase()
     {
         HashMap Usermap = new HashMap();

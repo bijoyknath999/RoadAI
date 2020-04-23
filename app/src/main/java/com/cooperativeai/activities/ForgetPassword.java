@@ -43,7 +43,6 @@ public class ForgetPassword extends AppCompatActivity {
         dialog = UtilityMethods.showDialog(ForgetPassword.this, R.layout.layout_loading_dialog);
         noconnectionDialog = UtilityMethods.showDialogAlert(ForgetPassword.this, R.layout.dialog_box);
 
-        //Reset Button Click Listener
         ResetBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -79,7 +78,6 @@ public class ForgetPassword extends AppCompatActivity {
 
     }
 
-    //it will send password reset link on mail
     private void ResetPassword()
     {
         firebaseAuth.sendPasswordResetEmail(Email).addOnCompleteListener(new OnCompleteListener<Void>() {

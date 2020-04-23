@@ -20,6 +20,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.text.DecimalFormat;
+
 public class SharedPreferenceManager {
     private static SharedPreferences sharedPreferences;
 
@@ -117,14 +119,14 @@ public class SharedPreferenceManager {
             if (sharedPreferences == null)
                 sharedPreferences = context.getSharedPreferences(Constants.PREFS_FILE_NAME, Context.MODE_PRIVATE);
 
-            double current_al = Double.parseDouble(sharedPreferences.getString(Constants.PREFS_USER_COIN_COUNT, "00000000.0"));
+            double current_al = Double.parseDouble(sharedPreferences.getString(Constants.PREFS_USER_COIN_COUNT, "00000000.00"));
 
             double final_val;
 
             if (mod_type.equalsIgnoreCase("add"))
-                final_val = current_al + value;
+                final_val = Double.parseDouble(new DecimalFormat("########.##").format(current_al + value));
             else
-                final_val = current_al - value;
+                final_val = Double.parseDouble(new DecimalFormat("########.##").format(current_al - value));
 
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString(Constants.PREFS_USER_COIN_COUNT, String.valueOf(final_val));

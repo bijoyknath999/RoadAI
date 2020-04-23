@@ -60,14 +60,12 @@ public class EditProfile extends AppCompatActivity {
         dialog = UtilityMethods.showDialog(EditProfile.this, R.layout.layout_loading_dialog);
         toolbar = findViewById(R.id.edit_profile_toolbar);
 
-        //For Toolbar
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Edit Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back);
         toolbar.setTitleTextColor(ContextCompat.getColor(this,R.color.color1));
 
-        //Get User Data From Firebase Database
         UserRef.child(firebaseAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot)
@@ -86,7 +84,7 @@ public class EditProfile extends AppCompatActivity {
 
             }
         });
-        //Update Button Click Listener
+
         UpdateBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,7 +121,6 @@ public class EditProfile extends AppCompatActivity {
 
     }
 
-    //Update user data in firebase database
     private void UpdateData()
     {
         String Ufullname = FullName.getText().toString();

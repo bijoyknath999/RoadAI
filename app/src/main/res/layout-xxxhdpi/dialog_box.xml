@@ -20,11 +20,11 @@
             android:text="No internet connection"
             android:textColor="@color/color1"
             android:gravity="center"
-            android:textSize="25sp"
+            android:textSize="28sp"
             android:textStyle="bold"
             android:drawableLeft="@drawable/ic_error"
             android:background="@color/color3"
-            android:drawablePadding="15dp"/>
+            android:drawablePadding="18dp"/>
     </androidx.cardview.widget.CardView>
 
 </RelativeLayout>

@@ -18,6 +18,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -70,19 +71,24 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
     MarkerOptions markerOptions;
     private static final String TAG = "Map";
     private GpsLocation gpsLocation;
+    private LocationManager locationManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         gpsLocation = new GpsLocation(Map.this);
         actionBar = getActionBar();
         SupportMapFragment supportMapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.google_map);
         supportMapFragment.getMapAsync(this);
-        OnPiP();
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+            gpsLocation.showSettingsAlert();
+        else
+            OnPiP();
     }
 
     private void OnPiP() {
@@ -201,20 +207,20 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
             mainstore.getConnection().getSocket().off("MAP_RESPONSE",onMapResponse);
     }
 
-    /*@Override
-    protected void onStart() {
-        super.onStart();
-        OnPiP();
-    }*/
-
     @Override
     protected void onPause() {
         super.onPause();
-        OnPiP();
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+            gpsLocation.showSettingsAlert();
+        else
+            OnPiP();
     }
 
     @Override
     public void onBackPressed() {
-         OnPiP();
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+            gpsLocation.showSettingsAlert();
+        else
+            OnPiP();
     }
 }

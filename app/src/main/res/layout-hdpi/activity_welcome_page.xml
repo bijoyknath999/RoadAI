@@ -24,8 +24,8 @@
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/welcome_image_1"
-                    android:layout_width="130dp"
-                    android:layout_height="130dp"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
                     android:src="@drawable/roadai2"
                     app:civ_border_color="@color/colorAccent"
                     android:layout_gravity="center"

@@ -32,7 +32,7 @@
             android:padding="10dp"
             android:layout_margin="10dp"
             android:layout_alignParentBottom="true"
-            android:textSize="20sp"
+            android:textSize="24sp"
             android:textAllCaps="false"
             android:textColor="@color/color1"
             android:background="@drawable/slide_custom_btn"/>

@@ -19,7 +19,7 @@ public class Constants {
     public static final String PREFS_USER_WALLET = "user_wallet";
     public static final String PREFS_USER_GOAL_CHECK = "user_level";
     public static final String PREFS_USER_TOTAL_PICTURES = "user_pics";
-    public static final double BASE_COIN_COUNT = 0.25;
+    public static final double BASE_COIN_COUNT = 0.04;
     public static final int BASE_PICTURE_CAPTURE_COUNT = 1;
     public static final String PREFS_USER_LAST_ACCESSED = "last_used";
     public static final String PREFS_USER_CURRENT_LEVEL = "user_current_level";

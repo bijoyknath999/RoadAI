@@ -9,17 +9,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Map Based"
-        android:textSize="30sp"
+        android:textSize="32sp"
         android:textColor="@color/color2"
         android:textAlignment="center"
         android:padding="5dp"
-        android:layout_marginTop="60dp"/>
+        android:layout_marginTop="80dp"/>
     <TextView
         android:id="@+id/slide_desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Detect Road Condition Using Any Smartphone"
-        android:textSize="20sp"
+        android:textSize="25sp"
         android:textAlignment="center"
         android:padding="5dp"/>
     <RelativeLayout
@@ -31,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/slide_img_1"
-            android:layout_margin="40dp"/>
+            android:layout_margin="30dp"/>
     </RelativeLayout>
 
 </LinearLayout>
