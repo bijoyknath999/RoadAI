@@ -7,5 +7,6 @@
         <item name="colorPrimaryDark">@color/color3</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:titleTextColor">@color/color1</item>
+        <item name="android:fontFamily">@font/montserrat</item>
     </style>
 </resources>

@@ -29,6 +29,6 @@ public class Constants {
     public static final int AUTO_CAPTURE_OFF = 1;
     public static final int AUTO_CAPTURE_DISABLED = 2;
     public static final String PREF_AUTO_CAPTURE_PREF = "auto_capture_prefs";
-    public static final String SOCKET_SERVER_URL = "https://roadai-server.azurewebsites.net/";
+    public static final String SOCKET_SERVER_URL = "https://roadaiserver.azurewebsites.net/";
     public static final double NEW_DISTRESS_THRESHOLD = 0.5;
 }

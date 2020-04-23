@@ -7,10 +7,12 @@
         <item name="colorPrimaryDark">@color/color3</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:statusBarColor">@color/color3</item>
+        <item name="android:fontFamily">@font/montserrat</item>
     </style>
 
     <style name="cameraTheme" parent="AppTheme">
         <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:fontFamily">@font/montserrat</item>
     </style>
 
     <style name="loadingDialog" parent="android:Theme">
@@ -22,6 +24,7 @@
         <item name="android:windowMinWidthMajor">90%</item>
         <item name="android:windowMinWidthMinor">90%</item>
         <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:fontFamily">@font/montserrat</item>
     </style>
 
 </resources>

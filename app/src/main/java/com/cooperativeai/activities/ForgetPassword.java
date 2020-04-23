@@ -78,6 +78,8 @@ public class ForgetPassword extends AppCompatActivity {
 
     }
 
+    //sendPasswordResetEmail() to send the reset email to the user.
+    // This method takes email as a parameter.
     private void ResetPassword()
     {
         firebaseAuth.sendPasswordResetEmail(Email).addOnCompleteListener(new OnCompleteListener<Void>() {

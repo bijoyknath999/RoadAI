@@ -66,6 +66,7 @@ public class SetupAccount extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (UtilityMethods.isInternetAvailable()) {
+                    //use this method to signout a user.
                     FirebaseAuth.getInstance().signOut();
                     startActivity(new Intent(SetupAccount.this, WelcomePage.class));
                     overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
@@ -127,6 +128,8 @@ public class SetupAccount extends AppCompatActivity {
 
     }
 
+
+    //it will check username already exits in database or not
     private void CheckUsername()
     {
         Query query = UsersDatabaseRef.orderByChild("Username").equalTo(username);
@@ -151,6 +154,8 @@ public class SetupAccount extends AppCompatActivity {
         });
     }
 
+    //it will create user profile in the firebase database
+    //store the all data on phone
     private void SaveUserInfo()
     {
 
@@ -176,6 +181,7 @@ public class SetupAccount extends AppCompatActivity {
                 if (task.isSuccessful())
                 {
 
+                    //it will store the user data in phone
                     SharedPreferences sharedPreferences = getSharedPreferences(Constants.PREFS_FILE_NAME, MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString(Constants.PREFS_USER_EMAIL, email);

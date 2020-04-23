@@ -71,16 +71,24 @@ public class WelcomePage extends AppCompatActivity {
 
         SignupBTN = (Button) findViewById(R.id.welcome_signup_btn);
         LoginBTN = (Button) findViewById(R.id.welcome_login_btn);
+
+        // Initialize Firebase Auth
         firebaseAuth = FirebaseAuth.getInstance();
+        //get reference to the "Users" node
         UsersDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
         noconnectionDialog = UtilityMethods.showDialogAlert(WelcomePage.this, R.layout.dialog_box);
 
 
 
+        // Configure Google Sign In
         GoogleSignInOptions gso = new  GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                // for the requestIdToken, this is in the Strings.xml file that
+                // is generated from your google-services.json
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
+
+        // Build a GoogleSignInClient with the options specified by gso.
         googleSignInClient = GoogleSignIn.getClient(this,gso);
 
         SignupBTN.setOnClickListener(new View.OnClickListener() {
@@ -143,6 +151,7 @@ public class WelcomePage extends AppCompatActivity {
             {
                 if (UtilityMethods.isInternetAvailable())
                 {
+                    // Launch Sign In
                     LoginWithGoogle();
                     dialog.show();
                     dialog2.dismiss();
@@ -215,6 +224,7 @@ public class WelcomePage extends AppCompatActivity {
 
     private void LoginWithGoogle()
     {
+        // Configure Google Client
         Intent signIntent = googleSignInClient.getSignInIntent();
         startActivityForResult(signIntent, RC_SIGN_IN);
     }
@@ -222,16 +232,19 @@ public class WelcomePage extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN)
         {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
+                // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 //Toast.makeText(WelcomePage.this,"Signed In Successfully",Toast.LENGTH_LONG).show();
                 FirebaseGoogleAuth(account);
             }
             catch (ApiException e)
             {
+                // Google Sign In failed, update UI appropriately
                 Toast.makeText(WelcomePage.this,"Signed In Failed :"+e,Toast.LENGTH_LONG).show();
                 dialog.dismiss();
             }
@@ -247,6 +260,7 @@ public class WelcomePage extends AppCompatActivity {
             {
                 if (task.isSuccessful())
                 {
+                    // Sign in success, chec
                     final String current_user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
                     UsersDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -282,6 +296,9 @@ public class WelcomePage extends AppCompatActivity {
         dialog = UtilityMethods.showDialog(WelcomePage.this, R.layout.layout_loading_dialog);
         dialog.show();
 
+        //To signin a user with email and password, we have one method called signInWithEmailAndPassword().
+        // This method takes email and password as a parameter, validates them
+        // and then signin a user in your application if the validation is successful.
         firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
@@ -318,6 +335,7 @@ public class WelcomePage extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot)
                 {
+                    //check user data is exists in firebase database or not
                     if (!dataSnapshot.hasChild(current_user_id))
                     {
                         startActivity(new Intent(WelcomePage.this, SetupAccount.class));
@@ -362,10 +380,14 @@ public class WelcomePage extends AppCompatActivity {
         }
     }
 
+    //it will get the user data and store it in phone
     private void SavaData()
     {
         String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
+        //To listen for changes in the database, we can use the addValueEventListener()
+        // method to add a ValueEventListener to a DatabaseReference
+        // User data change listener
         UsersDatabaseRef.child(UID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot)
@@ -419,6 +441,8 @@ public class WelcomePage extends AppCompatActivity {
     }
 
 
+    //if user is not verified
+    //it will send verification mail
     private void SendEmailVerification() {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

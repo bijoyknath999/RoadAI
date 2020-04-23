@@ -54,7 +54,9 @@ public class EditProfile extends AppCompatActivity {
         FullName = (EditText) findViewById(R.id.Editfullname);
         UserName = (EditText) findViewById(R.id.Editusername);
         UpdateBTN = (Button) findViewById(R.id.updatebtn);
+        // Initialize Firebase Auth
         firebaseAuth = FirebaseAuth.getInstance();
+        //get reference to the "Users" node
         UserRef = FirebaseDatabase.getInstance().getReference().child("Users");
         noconnectionDialog = UtilityMethods.showDialogAlert(EditProfile.this, R.layout.dialog_box);
         dialog = UtilityMethods.showDialog(EditProfile.this, R.layout.layout_loading_dialog);
@@ -121,6 +123,7 @@ public class EditProfile extends AppCompatActivity {
 
     }
 
+    //it will update user data in firebase database also store it on phone
     private void UpdateData()
     {
         String Ufullname = FullName.getText().toString();

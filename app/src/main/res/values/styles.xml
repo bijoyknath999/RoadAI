@@ -5,6 +5,7 @@
         <item name="colorPrimary">@color/color3</item>
         <item name="colorPrimaryDark">@color/color3</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:fontFamily">@font/montserrat</item>
     </style>
     <style name="cameraTheme" parent="AppTheme">
         <item name="colorPrimary">@color/color4</item>
@@ -17,12 +18,14 @@
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowBackground">@null</item>
+        <item name="android:fontFamily">@font/montserrat</item>
     </style>
     <style name="AppTheme2" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/color4</item>
         <item name="colorPrimaryDark">@color/color4</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
+        <item name="android:fontFamily">@font/montserrat</item>
     </style>
     <style name="loadingDialog" parent="android:Theme">
         <item name="android:windowIsTranslucent">true</item>
@@ -33,12 +36,13 @@
         <item name="android:windowMinWidthMajor">90%</item>
         <item name="android:windowMinWidthMinor">90%</item>
         <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:fontFamily">@font/montserrat</item>
     </style>
     <style name="drawerText" parent="TextAppearance.AppCompat">
         <item name="android:textColor">@color/color1</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textStyle">normal</item>
-
+        <item name="android:fontFamily">@font/montserrat</item>
     </style>
 
 </resources>

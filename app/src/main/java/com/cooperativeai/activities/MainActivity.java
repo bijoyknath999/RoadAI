@@ -19,6 +19,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,9 +44,13 @@ import com.cooperativeai.utils.Constants;
 import com.cooperativeai.utils.DateTimeManager;
 import com.cooperativeai.utils.SharedPreferenceManager;
 import com.cooperativeai.utils.UtilityMethods;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -90,6 +95,7 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //check permission for location manager
         if (Build.VERSION.SDK_INT>=29)
         {
             if (
@@ -122,7 +128,7 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
 
         gpsLocation = new GpsLocation(MainActivity.this);
 
-        //Firebase Database Reference
+        //get reference to the "Users" node
         UserAcc = FirebaseDatabase.getInstance().getReference().child("Users");
         noconnectionDialog = UtilityMethods.showDialogAlert(MainActivity.this, R.layout.dialog_box);
 
@@ -158,7 +164,8 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
             }
         });
 
-
+        //if user has location permission
+        //if user gps is not enabled it will display a settings alert or get current location
         if (hasLocationPermission)
         {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -179,6 +186,7 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
             Toast.makeText(MainActivity.this, "Permissions were not granted", Toast.LENGTH_SHORT).show();
         }
 
+        //it will get current location temperature using openweather library
         OpenWeatherMapHelper helper = new OpenWeatherMapHelper(getString(R.string.openweatherapi));
         helper.setUnits(Units.METRIC);
         helper.setLang(Lang.ENGLISH);
@@ -299,9 +307,12 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
 
     }
 
+    //use this method to signout a user.
+    //it will remove the stored user data in phone
     private void logout()
     {
         FirebaseAuth.getInstance().signOut();
+
         SharedPreferences sharedPreferences = getSharedPreferences(Constants.PREFS_FILE_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove(Constants.PREFS_USER_NAME);
@@ -405,7 +416,7 @@ public class MainActivity extends AppCompatActivity  implements LocationListener
 
     }
 
-    //Checking net connection when app will open
+    //Check net connection when app will open
     @Override
     protected void onStart() {
         super.onStart();

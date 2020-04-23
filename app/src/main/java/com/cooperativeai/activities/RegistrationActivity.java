@@ -126,6 +126,8 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
     }
+
+    //check username already exists in firebase database or not
     private void CheckUsername()
     {
         Query query = UsersDatabaseRef.orderByChild("Username").equalTo(username);
@@ -150,6 +152,7 @@ public class RegistrationActivity extends AppCompatActivity {
         });
     }
 
+    //check email already exists in firebase database or not
     private void CheckEmail()
     {
         Query query = UsersDatabaseRef.orderByChild("Email").equalTo(email);
@@ -174,6 +177,8 @@ public class RegistrationActivity extends AppCompatActivity {
         });
     }
 
+    //To signup a user with email and password, we can take the help of createUserWithEmailAndPassword() method.
+    // This method takes email and password as a parameter, validates them and then create a new user.
     private void startRegistration() {
 
         firebaseAuth.createUserWithEmailAndPassword(email,password)
@@ -200,6 +205,8 @@ public class RegistrationActivity extends AppCompatActivity {
                 });
     }
 
+    //it will create user profile in the firebase database
+    //store the all data on phone
     private void SaveUserDataDatabase() {
 
         HashMap UserMap = new HashMap();
@@ -251,6 +258,7 @@ public class RegistrationActivity extends AppCompatActivity {
         });
     }
 
+    //send verification mail to user
     private void SendEmailVerification() {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

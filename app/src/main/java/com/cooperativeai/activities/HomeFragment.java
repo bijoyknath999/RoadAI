@@ -71,13 +71,19 @@ public class HomeFragment extends Fragment {
                 lastUsedDateAsString = currentDateAsString;
             lastUsedDate = DateTimeManager.convertStringToDate(lastUsedDateAsString);
 
+            //it will check difference b/w last accessed date to current date
             if (DateTimeManager.diffInDate(currentDate, lastUsedDate) > Constants.LEVEL_CHECK_DELAY) {
+                //if the difference is greater than 2,then one level will be reduced
                 userCurrentLevel = reduceLevelCount();
+                //also decrease goal value by 1 if goal value is 1
                 DecreaeseGoal();
             }
             else
             {
+                //if the difference is not greater than 2, and coin value is greater than zero
+                //if last accessed date not equal to current data then coin will be converted into wallet
                 ConvertCoinToWalletSaveLastUsedDateSaveLevel();
+                //also increase goal value by 1
                 IcreaseGoalAndSaveData();
             }
 
@@ -105,6 +111,8 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
+
+    //convert coin into wallet
     private void ConvertCoinToWalletSaveLastUsedDateSaveLevel()
     {
 
@@ -127,12 +135,14 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    //decrease goal value
     private void DecreaeseGoal()
     {
         if (UserCurrentGoalCheck.isEmpty() || UserCurrentGoalCheck.equals("1"))
         SharedPreferenceManager.setUserGoalCheck(getActivity(),"");
     }
 
+    //increase goal value
     private void IcreaseGoalAndSaveData()
     {
 
@@ -150,6 +160,7 @@ public class HomeFragment extends Fragment {
 
     }
 
+    //reduce user level
     private int reduceLevelCount(){
         if (userCurrentLevel == 1){
             ConvertCoinToWalletSaveLastUsedDateSaveLevel();
@@ -174,6 +185,7 @@ public class HomeFragment extends Fragment {
         Usermap.put("Level",SharedPreferenceManager.getUserLevel(getActivity()));
         Usermap.put("Wallet",SharedPreferenceManager.getUserWallet(getActivity()));
         Usermap.put("Goalcheck",SharedPreferenceManager.getUserGoalCheck(getActivity()));
+        //to updating user data in firebase database
         UsersDatabaseRef.child(firebaseAuth.getCurrentUser().getUid()).updateChildren(Usermap);
     }
 

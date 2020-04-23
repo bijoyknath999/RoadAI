@@ -71,7 +71,7 @@ public class SplashActivity extends AppCompatActivity {
 
         }
 
-        //for checking permission granted or not
+        //check permission for camera,external storage and location manager
         if (Build.VERSION.SDK_INT>=23)
         {
             if (ContextCompat.checkSelfPermission(SplashActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
@@ -95,7 +95,7 @@ public class SplashActivity extends AppCompatActivity {
 
         crpv = (ColorfulRingProgressView) findViewById(R.id.crpv);
         if(HasPermission)
-            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))//check gps is enabled or not
             {
                 gpsLocation.showSettingsAlert();
             }
@@ -126,6 +126,8 @@ public class SplashActivity extends AppCompatActivity {
                     }
                     else
                     {
+                        //To check if a user is logged in or not,
+                        // we can use the getCurrentUser() method to get the status of a user.
                         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
                         if (currentUser == null)
                         {
@@ -195,6 +197,10 @@ public class SplashActivity extends AppCompatActivity {
     {
         String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
+        //To listen for changes in the database, we can use the addValueEventListener()
+        // method to add a ValueEventListener to a DatabaseReference
+        // User data change listener
+        //it will get the user data and store it on phone
         UsersDatabaseRef.child(UID).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

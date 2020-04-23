@@ -85,12 +85,14 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
         SupportMapFragment supportMapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.google_map);
         supportMapFragment.getMapAsync(this);
+        //if user gps is not enabled it will display a settings alert or picture in picture will be on
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
             gpsLocation.showSettingsAlert();
         else
             OnPiP();
     }
 
+    //picture in picture mode
     private void OnPiP() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             /*Display display = getWindowManager().getDefaultDisplay();
@@ -114,6 +116,8 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
         runOnUiThread(() -> {
             LinkedList<Distress> distressList = getList((String) args[0],Distress.class);
             System.out.println(args[0]);
+            //it will get all distresslist value
+            //set marker on google by distresslist
             if (distressList!=null)
                 for (int i = 0; i<distressList.size();i++)
                 {
@@ -154,16 +158,19 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
 
         mMap = googleMap;
         geo = new Geocoder(Map.this, Locale.getDefault());
+        //get user current location latitude and longitude
          if (gpsLocation!=null) {
                 latitude2 = gpsLocation.getLatitude();
                 longitude2 = gpsLocation.getLongitude();
             }
 
         try {
+            //it will get user current location full address
             if (geo == null)
                 geo = new Geocoder(Map.this, Locale.getDefault());
             List<Address> address = geo.getFromLocation(latitude2,longitude2, 1);
             latLng2 = new LatLng(latitude2,longitude2);
+            //it will set marker on user current location on google map
             mMap.addMarker(new MarkerOptions().position(latLng2).title(address.get(0).getAddressLine(0)));
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng2));
             mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng2));
@@ -180,6 +187,7 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
 
     }
 
+    //create a custom shaped bitmap marker for google map
     private Bitmap getMarkerBitmapFromView(@DrawableRes int resId) {
 
         View customMarkerView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.view_custom_marker, null);

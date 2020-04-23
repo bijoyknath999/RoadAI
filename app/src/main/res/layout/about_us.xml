@@ -35,10 +35,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/aboutustext"
-                android:textSize="20sp"
-                android:textStyle="normal"
+                android:textAlignment="center"
                 android:textColor="@color/color2"
-                android:textAlignment="center"/>
+                android:textSize="20sp"
+                android:textStyle="normal" />
         </LinearLayout>
 
     </ScrollView>

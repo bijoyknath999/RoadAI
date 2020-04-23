@@ -123,7 +123,9 @@ public class CameraActivity extends AppCompatActivity {
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         gpsLocation = new GpsLocation(CameraActivity.this);
+        //get reference to the "Users" node
         UsersDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        // Initialize Firebase Auth
         firebaseAuth = FirebaseAuth.getInstance();
         noconnectionDialog = UtilityMethods.showDialogAlert(CameraActivity.this, R.layout.dialog_box);
         FirebaseUser mUser = firebaseAuth.getCurrentUser();
@@ -141,6 +143,7 @@ public class CameraActivity extends AppCompatActivity {
                     }
                 });
 
+        //check permission for camera,external storage and location manager
         if (Build.VERSION.SDK_INT>=23)
         {
             if (ContextCompat.checkSelfPermission(CameraActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
@@ -209,6 +212,7 @@ public class CameraActivity extends AppCompatActivity {
         };
 
 
+        //auto picture in every 10 second
         AutoCapture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view)
@@ -260,6 +264,7 @@ public class CameraActivity extends AppCompatActivity {
             builder.show();
         }
 
+        //if user gps is not enabled it will display a settings alert or get user current location
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
         {
             gpsLocation.showSettingsAlert();
@@ -284,6 +289,8 @@ public class CameraActivity extends AppCompatActivity {
         }
     }
 
+    //Timer
+    //auto picture in every 10 second
     private void startAutoCapture()
     {
         TimerTask timerTask = new TimerTask() {
@@ -420,6 +427,11 @@ public class CameraActivity extends AppCompatActivity {
         }
     }
 
+    //create folder
+    //if user android version greater than 9
+    //created folder directory is storage/Android/data/com.cooperativeai/files/RoadAI
+    //if android version less than 10
+    //created folder directory is storage/Pictures/RoadAI
     private void createGalleryFolder() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
         {
@@ -462,6 +474,8 @@ public class CameraActivity extends AppCompatActivity {
         }
     }
 
+    //if it reaches the daily coins limit,
+    //it will not increase the coins value
     private void takePicture() {
         createGalleryFolder();
         if (wasCreated) {
@@ -525,6 +539,10 @@ public class CameraActivity extends AppCompatActivity {
         }
     }
 
+
+    //if user capture pic it will increase coins value by 0.04 until it reaches max daily limit
+    //if user goal value 2 and user reaches max daily coin limits it will increase user level by 1
+    //and user maxmimum level 5
     private void increaseCoinCount() {
 
         SharedPreferenceManager.changePictureCount(CameraActivity.this,"add",Constants.BASE_PICTURE_CAPTURE_COUNT);
@@ -561,6 +579,7 @@ public class CameraActivity extends AppCompatActivity {
 
     }
 
+    //create image file in external storage
     private File createImageFile() {
         String timeStamp = new SimpleDateFormat("ddmmyyyy", Locale.getDefault()).format(new Date());
         String imageFileName = "CoAi_" + timeStamp;

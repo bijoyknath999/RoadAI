@@ -31,9 +31,6 @@ public final class GpsLocation implements LocationListener {
     // flag for network status
     boolean isNetworkEnabled = false;
 
-    // flag for GPS status
-    boolean canGetLocation = false;
-
     Location location; // location
     double latitude; // latitude
     double longitude; // longitude
@@ -98,7 +95,6 @@ public final class GpsLocation implements LocationListener {
                 }
                 // if GPS Enabled get lat/long using GPS Services
                 if (isGPSEnabled) {
-                    this.canGetLocation = true;
                     location=null;
                     if (location == null) {
                         locationManager.requestLocationUpdates(
@@ -125,16 +121,6 @@ public final class GpsLocation implements LocationListener {
     }
 
     /**
-     * Stop using GPS listener Calling this function will stop using GPS in your
-     * app
-     * */
-    public void stopUsingGPS() {
-        if (locationManager != null) {
-            locationManager.removeUpdates((LocationListener) mContext);
-        }
-    }
-
-    /**
      * Function to get latitude
      * */
     public double getLatitude() {
@@ -154,15 +140,6 @@ public final class GpsLocation implements LocationListener {
         }
         // return longitude
         return longitude;
-    }
-
-    /**
-     * Function to check GPS/wifi enabled
-     *
-     * @return boolean
-     * */
-    public boolean canGetLocation() {
-        return this.canGetLocation;
     }
 
     /**
