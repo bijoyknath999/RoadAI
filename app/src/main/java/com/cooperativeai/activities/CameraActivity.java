@@ -218,7 +218,7 @@ public class CameraActivity extends AppCompatActivity {
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(CameraActivity.this, "Auto Click Enabled Every 1 second", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CameraActivity.this, "Auto Click Enabled Every 10 second", Toast.LENGTH_SHORT).show();
                         dialogInterface.dismiss();
                         SharedPreferenceManager.setAutoCaptureStatus(CameraActivity.this, Constants.AUTO_CAPTURE_ON);
                         startAutoCapture();
@@ -244,7 +244,7 @@ public class CameraActivity extends AppCompatActivity {
             builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    Toast.makeText(CameraActivity.this, "Auto Click Enabled Every 1 second", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CameraActivity.this, "Auto Click Enabled Every 10 second", Toast.LENGTH_SHORT).show();
                     dialogInterface.dismiss();
                     SharedPreferenceManager.setAutoCaptureStatus(CameraActivity.this, Constants.AUTO_CAPTURE_ON);
                     startAutoCapture();
